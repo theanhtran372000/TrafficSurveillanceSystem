@@ -22,12 +22,13 @@
         </div>
 
         <div class="map w-full mt-2">
-          <img
+          <!-- <img
             class="w-full object-cover border-2 border-blue"
             style="height: 360px"
             :src="require('@/assets/images/ggmap.jpg')"
             alt="Google map"
-          />
+          /> -->
+          <google-map class="w-full object-cover border-2 border-blue" />
           <div class="w-full mt-2 flex items-center justify-end">
             <input
               class="accent-blue mr-2"
@@ -231,6 +232,7 @@
 <script>
 import { ref } from "vue";
 import constants from "@/constants";
+import GoogleMap from "@/components/GoogleMap.vue";
 
 export default {
   setup() {
@@ -282,6 +284,7 @@ export default {
       scanRadius,
       threshold,
       showRedZones,
+      GoogleMap,
     };
   },
 };
