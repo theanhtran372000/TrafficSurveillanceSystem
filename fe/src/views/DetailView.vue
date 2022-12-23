@@ -1,29 +1,31 @@
 <template>
+  <!-- Body -->
   <div class="flex flex-row w-full h-screen">
     <!-- Chart display -->
     <div class="w-full mt-20 mb-6 mx-6 rounded-lg bg-gray p-8" style="flex: 2">
+
+      <!-- Chart -->
       <div class="w-full">
         <div class="w-full flex justify-between items-center">
           <h1 class="font-bold text-lg text-blue">Statistics</h1>
           <div class="flex">
             <font-awesome-icon
               class="text-blue mr-4 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
-              icon="fa-solid fa-arrow-rotate-left"
-            />
+              icon="fa-solid fa-arrow-rotate-left" />
             <font-awesome-icon
               class="text-blue mr-4 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
-              icon="fa-solid fa-arrow-right"
-            />
+              icon="fa-solid fa-arrow-right" />
           </div>
         </div>
 
         <div class="map w-full mt-2">
-          <img
-            class="w-full object-fit border-2 border-blue"
-            style="height: 360px"
-            :src="require('@/assets/images/linechart.png')"
-            alt="Google map"
-          />
+          <!-- <img class="w-full object-fit border-2 border-blue" style="height: 360px"
+            :src="require('@/assets/images/linechart.png')" alt="Google map" /> -->
+          <div class="h-64">
+            <!-- <Line :options="chartOptions" :data="chartData" /> -->
+            <TemperatureChart />
+            <HumidityChart />
+          </div>
           <div class="w-full mt-6 flex items-center justify-center">
             <h1 class="font-bold text-blue text-2xl">Temperature line chart</h1>
           </div>
@@ -35,45 +37,33 @@
         <div class="flex justify-between items-center pt-4">
           <div class="flex items-center justify-center">
             <p class="font-semibold text-lg text-blue mr-4">Average</p>
-            <span
-              class="bg-white px-6 py-1 rounded-lg text-blue font-normal text-lg"
-              >{{ average }}</span
-            >
+            <span class="bg-white px-6 py-1 rounded-lg text-blue font-normal text-lg">{{ average }}</span>
           </div>
 
           <div class="flex items-center justify-center">
             <p class="font-semibold text-lg text-blue mx-4">From</p>
-            <input
-              type="datetime-local"
-              class="text-blue outline-none text-lg font-normal w-72 py-1 px-6 rounded-lg"
-              v-model="from"
-            />
+            <input type="datetime-local" class="text-blue outline-none text-lg font-normal w-72 py-1 px-6 rounded-lg"
+              v-model="from" />
             <p class="font-semibold text-lg text-blue mx-4">to</p>
-            <input
-              type="datetime-local"
-              class="text-blue outline-none text-lg font-normal w-72 py-1 px-6 rounded-lg"
-              v-model="to"
-            />
+            <input type="datetime-local" class="text-blue outline-none text-lg font-normal w-72 py-1 px-6 rounded-lg"
+              v-model="to" />
           </div>
         </div>
 
         <div class="map"></div>
       </div>
     </div>
+
+    <!-- Camera display -->
     <div class="w-full mt-20 mb-6 mr-6 rounded-lg bg-gray p-8" style="flex: 1">
       <!-- Camera image -->
       <div class="w-full">
         <div class="w-full flex flex-col justify-start">
           <h1 class="font-bold text-lg text-blue">Camera image</h1>
-          <img
-            class="w-full object-cover border-2 border-blue"
-            style="height: 300px"
-            :src="require('@/assets/images/traffic.jpg')"
-            alt="Traffic image"
-          />
+          <img class="w-full object-cover border-2 border-blue" style="height: 300px"
+            :src="require('@/assets/images/traffic.jpg')" alt="Traffic image" />
         </div>
       </div>
-
       <!-- Camera info -->
       <div class="w-full mt-8">
         <div class="w-full flex flex-col justify-start">
@@ -84,14 +74,10 @@
             <label class="flex items-center" for="location">
               <!-- Radius column -->
               <div style="flex: 1">
-                <span class="text-lg font-semibold text-blue text-normal mr-4"
-                  >Cam ID</span
-                >
+                <span class="text-lg font-semibold text-blue text-normal mr-4">Cam ID</span>
               </div>
               <div class="flex items-center justify-between" style="flex: 4">
-                <p
-                  class="w-full bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg"
-                >
+                <p class="w-full bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg">
                   {{ camid }}
                 </p>
               </div>
@@ -103,25 +89,17 @@
             <label class="flex items-center" for="location">
               <!-- Radius column -->
               <div style="flex: 1">
-                <span class="text-lg font-semibold text-blue text-normal mr-4"
-                  >Longtitude</span
-                >
+                <span class="text-lg font-semibold text-blue text-normal mr-4">Longtitude</span>
               </div>
               <div class="flex items-center justify-between" style="flex: 4">
-                <p
-                  class="bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg"
-                >
+                <p class="bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg">
                   {{ longtitude }}
                 </p>
 
                 <!-- Meters -->
-                <span class="text-lg font-semibold text-blue text-normal mr-4"
-                  >Latitude</span
-                >
+                <span class="text-lg font-semibold text-blue text-normal mr-4">Latitude</span>
 
-                <p
-                  class="bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg"
-                >
+                <p class="bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg">
                   {{ latitude }}
                 </p>
               </div>
@@ -133,14 +111,10 @@
             <label class="flex items-center" for="location">
               <!-- Radius column -->
               <div style="flex: 1">
-                <span class="text-lg font-semibold text-blue text-normal mr-4"
-                  >Updated</span
-                >
+                <span class="text-lg font-semibold text-blue text-normal mr-4">Updated</span>
               </div>
               <div class="flex items-center justify-between" style="flex: 4">
-                <p
-                  class="w-full bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg"
-                >
+                <p class="w-full bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg">
                   {{ lastUpdated }}
                 </p>
               </div>
@@ -154,9 +128,12 @@
 
 <script>
 import { ref } from "vue";
+import TemperatureChart from '@/components/charts/TemperatureChart.vue'
+import HumidityChart from '@/components/charts/HumidityChart.vue'
 // import constants from "@/constants";
 
 export default {
+  components: { TemperatureChart, HumidityChart },
   setup() {
     const average = ref(0.0);
 
