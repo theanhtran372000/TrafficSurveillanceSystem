@@ -1,6 +1,10 @@
-<template>
-  <!-- Header -->
-  <div
+<template
+  
+>
+<div :style="{
+    backgroundImage: 'url(' + require('@/assets/images/home_bg.jpg') + ')',
+  }">
+ <div
     class="w-full h-14 bg-gray shadow-lg fixed top-0 flex flex-row justify-between"
   >
     <!-- Logo -->
@@ -22,7 +26,9 @@
         class="text-2xl mr-4 text-dark_blue"
         icon="fa-solid fa-user-secret"
       />
-      <h3 class="font-semibold text-lg text-blue mr-4">{{ store?.profile?.name }}</h3>
+      <h3 class="font-semibold text-lg text-blue mr-4">
+        {{ store?.profile?.name }}
+      </h3>
       <font-awesome-icon
         @click="onLogOut"
         class="text-2xl mr-4 text-dark_blue cursor-pointer"
@@ -30,7 +36,10 @@
       />
     </div>
   </div>
-  <slot></slot>
+    <slot></slot>
+</div>
+  <!-- Header -->
+ 
 </template>
 
 <script>
@@ -60,7 +69,10 @@ export default {
 
       // Back to index
       toIndex();
-      window.location.reload();
+      router.push({
+        name: "login",
+        params: {},
+      });
     }
 
     function onBackToIndex() {
@@ -79,8 +91,8 @@ export default {
   },
   data() {
     return {
-      store
-    }
-  }
+      store,
+    };
+  },
 };
 </script>

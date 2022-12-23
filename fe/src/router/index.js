@@ -3,6 +3,8 @@ import { store } from "@/store/store";
 import { createRouter, createWebHistory } from "vue-router";
 import IndexView from "../views/IndexView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
+import C from "@/constants";
+import { getAccessToken } from "@/utils/accessToken";
 
 const routes = [
   {
@@ -10,18 +12,23 @@ const routes = [
     name: "index",
     meta: {
       layout: "FooterLayout",
+      isPrivate: false,
     },
     component: IndexView,
   },
   {
     path: "/",
     redirect: "/index",
+    meta: {
+      isPrivate: false,
+    },
   },
   {
     path: "/login",
     name: "login",
     meta: {
       layout: "FooterLayout",
+      isPrivate: false,
     },
     component: () =>
       import(/* webpackChunkName: "login" */ "../views/LoginView.vue"),
@@ -31,6 +38,7 @@ const routes = [
     name: "register",
     meta: {
       layout: "FooterLayout",
+      isPrivate: false,
     },
     component: () =>
       import(/* webpackChunkName: "register" */ "../views/RegisterView.vue"),
@@ -40,6 +48,7 @@ const routes = [
     name: "home",
     meta: {
       layout: "HeaderLayout",
+      isPrivate: true,
     },
     component: () =>
       import(/* webpackChunkName: "home" */ "../views/HomeView.vue"),
@@ -49,6 +58,7 @@ const routes = [
     name: "detail",
     meta: {
       layout: "HeaderLayout",
+      isPrivate: true,
     },
     component: () =>
       import(/* webpackChunkName: "detail" */ "../views/DetailView.vue"),
@@ -56,6 +66,9 @@ const routes = [
   {
     path: "/:pathMatch(.*)*",
     component: NotFoundView,
+    meta: {
+      isPrivate: false,
+    },
   },
 ];
 
@@ -65,19 +78,27 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  const { getMyProfile } = useLogin();
-  store.setLoading(true);
-  const isAuthenticated = await getMyProfile();
-  if (isAuthenticated?.statusCode === 401 && to.name !== "login") {
-    next({ name: "login" });
-  }
-  store.setLoading(false);
-  store.setProfile(isAuthenticated.data);
-  if (isAuthenticated?.statusCode === 200 && to.name === "index") {
-    next({ name: "home" });
-  }
-  if (isAuthenticated?.statusCode === 200 && to.name === "login") {
-    next({ name: "home" });
+  console.log("to, from: ", to, from);
+  console.log("getAccessToken(): ", getAccessToken());
+
+  if (to?.meta?.isPrivate) {
+    const { getMyProfile } = useLogin();
+    const isAuthenticated = await getMyProfile();
+    if (isAuthenticated?.statusCode === 401 && to.name !== "login") {
+      next({ name: "login" });
+    }
+    store.setProfile(isAuthenticated.data);
+    if (
+      isAuthenticated?.statusCode === 200 &&
+      (to.name === "index" || to.name === "login")
+    ) {
+      next({ name: "home" });
+    }
+  } else {
+    if (getAccessToken()) {
+      next({ name: "home" });
+    }
+    store.setAuthState(null);
   }
   next();
 });
