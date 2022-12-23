@@ -22,13 +22,53 @@
         </div>
 
         <div class="map w-full mt-2">
-          <!-- <img
+          <!-- Show maps -->
+          <GMapMap 
             class="w-full object-cover border-2 border-blue"
-            style="height: 360px"
-            :src="require('@/assets/images/ggmap.jpg')"
-            alt="Google map"
-          /> -->
-          <google-map class="w-full object-cover border-2 border-blue" />
+            style="height: 360px" :center="{ lat: 40.689247, lng: -74.044502 }" :zoom="18">
+
+              <GMapMarker
+                :icon="{
+                  url: require('@/assets/images/marker.png'),
+                  scaledSize: {
+                    width: 40,
+                    height: 40
+                  }
+                  
+                }"
+                :position="{ lat: 40.689247, lng: -74.044502 }"
+                :clickable="true"
+              />
+              <GMapMarker
+                :icon="{
+                  url: require('@/assets/images/marker.png'),
+                  scaledSize: {
+                    width: 40,
+                    height: 40
+                  }
+                  
+                }"
+                :position="{ lat: 40.689247, lng: -74.044 }"
+                :clickable="true"
+              />
+              <GMapMarker
+                :icon="{
+                  url: require('@/assets/images/marker.png'),
+                  scaledSize: {
+                    width: 40,
+                    height: 40
+                  }
+                  
+                }"
+                :position="{ lat: 40.689247, lng: -74.04 }"
+                :clickable="true"
+              />
+            
+            
+            
+          </GMapMap>
+
+          <!-- Show checkbox -->
           <div class="w-full mt-2 flex items-center justify-end">
             <input
               class="accent-blue mr-2"
@@ -232,7 +272,6 @@
 <script>
 import { ref } from "vue";
 import constants from "@/constants";
-import GoogleMap from "@/components/GoogleMap.vue";
 import { store } from "@/store/store";
 
 export default {
@@ -285,7 +324,6 @@ export default {
       scanRadius,
       threshold,
       showRedZones,
-      GoogleMap,
     };
   },
   data() {

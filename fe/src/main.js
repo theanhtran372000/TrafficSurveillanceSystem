@@ -31,11 +31,19 @@ library.add([
   faRightFromBracket,
 ]);
 
+import VueGoogleMaps from '@fawmi/vue-google-maps'
+import C from "./constants";
+
 // Create app
 const app = createApp(App);
 
 registerGlobalComponents(app);
 
+app.use(VueGoogleMaps, {
+  load: {
+      key: C.__map_api_key__,
+  },
+})
 app.use(router);
 app.component("font-awesome-icon", FontAwesomeIcon);
 
