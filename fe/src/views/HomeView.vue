@@ -233,6 +233,7 @@
 import { ref } from "vue";
 import constants from "@/constants";
 import GoogleMap from "@/components/GoogleMap.vue";
+import { store } from "@/store/store";
 
 export default {
   setup() {
@@ -287,5 +288,10 @@ export default {
       GoogleMap,
     };
   },
+  data() {
+    return {
+      store
+    }
+  }
 };
 </script>

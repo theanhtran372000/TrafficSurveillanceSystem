@@ -10,4 +10,10 @@ export default {
   __default_red_zones: true,
   __baseURL__: "http://159.89.197.197:8801",
   __access_token__: null,
+  __token_key__: '__token_key__',
+  __request_status__: {
+    REQUEST: "REQUEST",
+    SUCCESS: "SUCCESS",
+    ERROR: "ERROR",
+  }
 };

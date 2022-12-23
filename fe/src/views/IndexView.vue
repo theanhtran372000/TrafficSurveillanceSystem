@@ -47,26 +47,26 @@ import { useLogin } from "@/composables/useLogin";
 
 export default {
   setup() {
-    const router = useRouter();
-    const { error, logIn } = useLogin();
+    // const router = useRouter();
+    // const { error, logIn, getMyProfile } = useLogin();
 
-    async function logInWithAccessToken() {
-      const response = await logIn("", "");
-      if (!error.value)
-        router.push({
-          name: "home",
-          params: response.data,
-        });
-    }
+    // async function logInWithAccessToken() {
+    //   const response = await getMyProfile();
+    //   if (!error.value)
+    //     router.push({
+    //       name: "home",
+    //       params: response.data,
+    //     });
+    // }
 
-    const accessToken = getAccessToken(instance);
-    console.log("Access token: ", accessToken);
+    // const accessToken = getAccessToken(instance);
+    // console.log("Access token: ", accessToken);
 
-    // Login if already have access token
-    if (accessToken) {
-      console.log("Already have access token!");
-      logInWithAccessToken();
-    }
+    // // Login if already have access token
+    // if (accessToken) {
+    //   console.log("Already have access token!");
+    //   logInWithAccessToken();
+    // }
   },
 };
 </script>

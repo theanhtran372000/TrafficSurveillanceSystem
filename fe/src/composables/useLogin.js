@@ -10,31 +10,35 @@ async function logIn(phone, password) {
   isPending.value = true;
   error.value = null;
   try {
-    // Current access token
-    const accessToken = getAccessToken(instance);
-
-    // If dont have access token, request for one
-    if (!accessToken) {
-      const response = await instance.post("/auth", {
-        phone: phone,
-        password: password,
-      });
-      console.log(response);
-      if (!isOk(response)) throw new Error("Login failed!");
-      const accessToken = `Bearer ${response.data["access_token"]}`;
-      console.log("Token: ", accessToken);
-      setAccessToken(instance, accessToken);
-    }
-
-    const response = await instance.get("/auth");
+    const response = await instance.post("/auth", {
+      phone: phone,
+      password: password,
+    });
     if (!isOk(response)) throw new Error("Login failed!");
-    console.log("Response: ", response);
+
+    const accessToken = response.data["access_token"];
+    setAccessToken(instance, accessToken);
     return response;
   } catch (err) {
-    console.log("Error:", err);
     error.value = err.response.data.message;
   } finally {
     isPending.value = false;
+  }
+}
+
+async function getMyProfile() {
+  try {
+    const response = await instance.get("/auth");
+    
+    return {
+      statusCode: 200,
+      data: response.data,
+    };
+  } catch (err) {
+    console.log("err: ", err);
+    return {
+      statusCode: 401,
+    };
   }
 }
 
@@ -43,5 +47,6 @@ export function useLogin() {
     isPending,
     error,
     logIn,
+    getMyProfile,
   };
 }

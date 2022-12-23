@@ -1,3 +1,5 @@
+import { useLogin } from "@/composables/useLogin";
+import { store } from "@/store/store";
 import { createRouter, createWebHistory } from "vue-router";
 import IndexView from "../views/IndexView.vue";
 import NotFoundView from "../views/NotFoundView.vue";
@@ -60,6 +62,24 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach(async (to, from, next) => {
+  const { getMyProfile } = useLogin();
+  store.setLoading(true);
+  const isAuthenticated = await getMyProfile();
+  if (isAuthenticated?.statusCode === 401 && to.name !== "login") {
+    next({ name: "login" });
+  }
+  store.setLoading(false);
+  store.setProfile(isAuthenticated.data);
+  if (isAuthenticated?.statusCode === 200 && to.name === "index") {
+    next({ name: "home" });
+  }
+  if (isAuthenticated?.statusCode === 200 && to.name === "login") {
+    next({ name: "home" });
+  }
+  next();
 });
 
 export default router;
