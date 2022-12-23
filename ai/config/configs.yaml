@@ -1,0 +1,30 @@
+# General config
+seed: 2022
+
+# Dataset config
+data_train_dir: crawl_data/data/train
+data_val_dir: crawl_data/data/val
+batch_size: 256
+n_workers: 0
+
+# Model config
+backbone: vit_tiny_patch16_224
+n_unfreeze: 0 # Number of unfreeze blocks
+unfreeze_from: 0 # epochs
+checkpoint: saved/noncrop_gelu/model.pt
+onnx_path: saved/noncrop_gelu/model.onnx
+
+# Train config
+scheduler: cosine
+device: cuda
+save_dir: saved
+n_epochs: 100
+lr: 0.01
+es_patience: 10 # epochs
+dev_run: False
+
+# Log config
+console_log_every: 1 # iters
+wandb_project: accident-detection
+wandb_entity: bkc-atgt
+wandb_name: vit-tiny-freeze-all-noncrop-gelud-cosine-VTD

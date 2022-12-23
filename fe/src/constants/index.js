@@ -1,0 +1,13 @@
+export default {
+  __version__: "v1.0.0",
+  __default_layout__: "EmptyLayout",
+  __default_city__: "Hanoi",
+  __default_district__: "Hai Ba Trung",
+  __default_time_delta__: 10, // minute
+  __default_time_unit__: "minutes",
+  __default_scan_radius__: 200, // meter
+  __default_congestion_threshold__: 20.0,
+  __default_red_zones: true,
+  __baseURL__: "http://159.89.197.197:8801",
+  __access_token__: null,
+};

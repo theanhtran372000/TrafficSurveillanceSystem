@@ -1,0 +1,13 @@
+venv
+*.jpg
+*.png
+*.mp4
+*.pt
+*.onnx
+*.avi
+*.ave
+*.exe
+*.zip
+__pycache__
+wandb
+play
