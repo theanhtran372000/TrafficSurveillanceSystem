@@ -1,3 +1,0 @@
-PyYAML
-yt_dlp
-tqdm
