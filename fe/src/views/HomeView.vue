@@ -1,5 +1,7 @@
 <template>
-  <div class="flex flex-row w-full h-screen">
+  <div
+    class="flex flex-row w-full h-screen"
+  >
     <!-- Map display -->
     <div class="w-full mt-20 mb-6 mx-6 rounded-lg bg-gray p-8" style="flex: 2">
       <div class="w-full">
@@ -328,8 +330,11 @@ export default {
   },
   data() {
     return {
-      store
-    }
-  }
+      store,
+    };
+  },
+  // components: {
+  //   FullPageLoading,
+  // },
 };
 </script>

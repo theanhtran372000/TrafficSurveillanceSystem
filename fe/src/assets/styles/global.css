@@ -3,7 +3,7 @@
 }
 
 body {
-    @apply bg-main;
+    /* @apply bg-main; */
     background-repeat: no-repeat;
     background-size: cover;
     font-family: 'Nunito', sans-serif;

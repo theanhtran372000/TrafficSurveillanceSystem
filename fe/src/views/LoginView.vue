@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex flex-row justify-center items-center">
+  <div class="w-full h-full flex flex-row justify-center items-center">
     <!-- Login form on the left -->
     <div>
       <form
@@ -100,8 +100,6 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useLogin } from "@/composables/useLogin";
-import { getAccessToken } from "@/utils/accessToken";
-import instance from "@/utils/axios";
 
 export default {
   setup() {
