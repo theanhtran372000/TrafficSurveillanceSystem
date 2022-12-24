@@ -1,11 +1,9 @@
 <template>
-  <div
-    v-if="store.loading === true"
-    class="w-screen h-screen bg-white flex items-center justify-center"
+  <FullPageLoading />
+  <component
+    :is="layout"
+    v-if="store.authState !== C.__request_status__.REQUEST"
   >
-    <img src="@/assets/images/icons8-fiat-500.gif" />
-  </div>
-  <component :is="layout" v-if="store.loading === false">
     <router-view />
   </component>
 </template>
@@ -15,6 +13,7 @@ import { computed } from "vue";
 import { useRoute } from "vue-router";
 import C from "./constants";
 import { store } from "@/store/store";
+import FullPageLoading from "@/components/FullPageLoading.vue";
 
 export default {
   setup() {
@@ -26,7 +25,11 @@ export default {
   data() {
     return {
       store,
+      C,
     };
+  },
+  components: {
+    FullPageLoading,
   },
 };
 </script>

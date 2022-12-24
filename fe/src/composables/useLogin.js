@@ -2,6 +2,8 @@ import { ref } from "vue";
 import { getAccessToken, setAccessToken } from "@/utils/accessToken";
 import { isOk } from "@/utils/response";
 import instance from "@/utils/axios";
+import { store } from "@/store/store";
+import C from "@/constants";
 
 const error = ref(null);
 const isPending = ref(false);
@@ -28,14 +30,24 @@ async function logIn(phone, password) {
 
 async function getMyProfile() {
   try {
+    // return new Promise((resolve, reject) => {
+    //   setTimeout(() => {
+    //     resolve({
+    //       statusCode: 200,
+    //       data: {},
+    //     });
+    //   }, 3000);
+    // });
+    store.setAuthState(C.__request_status__.REQUEST);
     const response = await instance.get("/auth");
-    
+    store.setAuthState(C.__request_status__.SUCCESS);
     return {
       statusCode: 200,
       data: response.data,
     };
   } catch (err) {
     console.log("err: ", err);
+    store.setAuthState(C.__request_status__.ERROR);
     return {
       statusCode: 401,
     };

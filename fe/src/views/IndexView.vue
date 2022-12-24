@@ -1,5 +1,5 @@
 <template>
-  <div class="pr-28 pl-10 w-full flex flex-row justify-center items-center">
+  <div class="pr-28 pl-10 w-full h-full flex flex-row justify-center items-center">
     <!-- Image on the left -->
     <div class="mr-36" style="width: 500px; height: 500px">
       <img
