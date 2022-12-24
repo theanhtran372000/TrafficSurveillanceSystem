@@ -15,5 +15,6 @@ export default {
     REQUEST: "REQUEST",
     SUCCESS: "SUCCESS",
     ERROR: "ERROR",
-  }
+  },
+  __map_api_key__: 'AIzaSyDWGL-ISSbv_dGbG69PZR5Xs19d_vU2Ous',
 };
