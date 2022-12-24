@@ -22,7 +22,7 @@
         class="text-2xl mr-4 text-dark_blue"
         icon="fa-solid fa-user-secret"
       />
-      <h3 class="font-semibold text-lg text-blue mr-4">{{ username }}</h3>
+      <h3 class="font-semibold text-lg text-blue mr-4">{{ store?.profile?.name }}</h3>
       <font-awesome-icon
         @click="onLogOut"
         class="text-2xl mr-4 text-dark_blue cursor-pointer"
@@ -30,7 +30,7 @@
       />
     </div>
   </div>
-  <slot />
+  <slot></slot>
 </template>
 
 <script>
@@ -38,6 +38,7 @@ import { ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { resetAccessToken } from "@/utils/accessToken";
 import instance from "@/utils/axios";
+import { store } from "@/store/store";
 
 export default {
   setup() {
@@ -59,6 +60,7 @@ export default {
 
       // Back to index
       toIndex();
+      window.location.reload();
     }
 
     function onBackToIndex() {
@@ -75,5 +77,10 @@ export default {
       username,
     };
   },
+  data() {
+    return {
+      store
+    }
+  }
 };
 </script>

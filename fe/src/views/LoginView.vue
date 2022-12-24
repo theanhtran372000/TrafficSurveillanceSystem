@@ -112,25 +112,12 @@ export default {
 
     const { isPending, error, logIn } = useLogin();
 
-    // Login if already have access token
-    const accessToken = getAccessToken(instance);
-    console.log("Access token: ", accessToken);
-    if (accessToken) {
-      onSubmit();
-    }
-
     async function onSubmit() {
       console.log(phone.value, password.value);
       const response = await logIn(phone.value, password.value);
-      console.log(response);
-      console.log(response.data);
-      console.log(response.data.name);
       if (!error.value)
         router.push({
           name: "home",
-          params: {
-            name: response.data.name,
-          },
         });
     }
 

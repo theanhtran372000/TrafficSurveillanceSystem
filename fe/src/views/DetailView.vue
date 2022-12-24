@@ -9,25 +9,35 @@
         <div class="w-full flex justify-between items-center">
           <h1 class="font-bold text-lg text-blue">Statistics</h1>
           <div class="flex">
-            <font-awesome-icon
-              class="text-blue mr-4 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
-              icon="fa-solid fa-arrow-rotate-left" />
-            <font-awesome-icon
-              class="text-blue mr-4 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
-              icon="fa-solid fa-arrow-right" />
+            <button>
+              <font-awesome-icon
+                class="text-blue mr-4 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
+                icon="fa-solid fa-arrow-rotate-left" />
+            </button>
+
+            <button
+              v-for="chart in charts"
+              :key="chart"
+              class="mx-2 text-blue hover:text-dark_blue transition ease-in-out duration-500"
+              @click="currentChart = chart"
+            >
+              <!-- <font-awesome-icon
+                class="text-blue mr-4 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
+                icon="fa-solid fa-arrow-right" /> -->
+                {{ chart }}
+            </button>
+
           </div>
         </div>
 
         <div class="map w-full mt-2">
           <!-- <img class="w-full object-fit border-2 border-blue" style="height: 360px"
             :src="require('@/assets/images/linechart.png')" alt="Google map" /> -->
-          <div class="h-64">
-            <!-- <Line :options="chartOptions" :data="chartData" /> -->
-            <TemperatureChart />
-            <HumidityChart />
+          <div class="h-64 w-full object-fit">
+            <component :is="currentChart"></component>
           </div>
           <div class="w-full mt-6 flex items-center justify-center">
-            <h1 class="font-bold text-blue text-2xl">Temperature line chart</h1>
+            <h1 class="font-bold text-blue text-2xl">{{ currentChart }} Line Chart</h1>
           </div>
         </div>
       </div>
@@ -52,6 +62,9 @@
 
         <div class="map"></div>
       </div>
+      <button class="flex float-right mt-7 mr-2 bg-blue py-2 px-7 text-white rounded">
+        OK
+      </button>
     </div>
 
     <!-- Camera display -->
@@ -128,12 +141,20 @@
 
 <script>
 import { ref } from "vue";
-import TemperatureChart from '@/components/charts/TemperatureChart.vue'
-import HumidityChart from '@/components/charts/HumidityChart.vue'
+import Temperature from '@/components/charts/TemperatureChart.vue'
+import Humidity from '@/components/charts/HumidityChart.vue'
+import Rain from '@/components/charts/RainChart.vue'
+import Congestion from '@/components/charts/CongestionChart.vue'
 // import constants from "@/constants";
 
 export default {
-  components: { TemperatureChart, HumidityChart },
+  components: { Temperature, Humidity, Rain, Congestion },
+  data() {
+    return {
+      currentChart: 'Temperature',
+      charts: ['Temperature', 'Humidity', 'Rain', 'Congestion']
+    }
+  },
   setup() {
     const average = ref(0.0);
 
@@ -168,6 +189,7 @@ export default {
     const lastUpdated = ref(localDatetime);
 
     console.log(localDatetime);
+    // console.log(typeof localDatetime)
 
     return {
       average,
