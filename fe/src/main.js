@@ -19,6 +19,7 @@ import {
   faPlus,
   faPlusMinus,
   faRightFromBracket,
+  faLocationDot,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add([
@@ -29,6 +30,7 @@ library.add([
   faPlus,
   faPlusMinus,
   faRightFromBracket,
+  faLocationDot,
 ]);
 
 import VueGoogleMaps from '@fawmi/vue-google-maps'
