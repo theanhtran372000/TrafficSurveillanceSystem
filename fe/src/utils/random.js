@@ -21,7 +21,7 @@ export function randomSamples(lat=20.995, lng=105.845474, delta=0.1, n_samples=1
   const results = []
   for (let i = 0; i < n_samples; i++) {
     results.push({
-      "_id": randomString(10),
+      "id": randomString(10),
       "position": {
         "lat": lat + getRandom() * delta, 
         "lng": lng + getRandom() * delta
