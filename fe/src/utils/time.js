@@ -22,8 +22,8 @@ export function getTimeRange(delta, unit) {
   }
 }
 
-export function formatUrl(timeRange){
-  return `/cameras/events/${timeRange.start.replace(/:/g, '%3A')}/${timeRange.end.replace(/:/g, '%3A')}`
+export function formatUrl(prefix, timeRange){
+  return `${prefix}/${timeRange.start.replace(/:/g, '%3A')}/${timeRange.end.replace(/:/g, '%3A')}`
 }
 
 export function formatTime(date){
