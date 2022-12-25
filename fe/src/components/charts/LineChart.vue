@@ -73,7 +73,7 @@ export default {
             this.myChart.data.datasets[0].data = Object.values(newval)
             console.log(this.myChart.data.labels)
             console.log(this.myChart.data.datasets[0].data)
-            this.myChart.clear()
+            // this.myChart.clear()
         }
     },
 }

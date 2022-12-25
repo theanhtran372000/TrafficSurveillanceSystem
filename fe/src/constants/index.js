@@ -17,4 +17,9 @@ export default {
     ERROR: "ERROR",
   },
   __map_api_key__: 'AIzaSyDWGL-ISSbv_dGbG69PZR5Xs19d_vU2Ous',
+  __time_unit__: {
+    SECOND: "seconds",
+    MINUTE: "minutes",
+    HOUR: "hours"
+  }
 };

@@ -16,8 +16,7 @@
             </button>
 
             <button v-for="chart in Object.keys(charts)" :key="chart"
-              class="mx-2 text-blue hover:text-dark_blue transition ease-in-out duration-500"
-              @click="() => {
+              class="mx-2 text-blue hover:text-dark_blue transition ease-in-out duration-500" @click="() => {
                 currentChart = chart;
               }">
               <!-- <font-awesome-icon
@@ -33,7 +32,8 @@
           <!-- <img class="w-full object-fit border-2 border-blue" style="height: 360px"
             :src="require('@/assets/images/linechart.png')" alt="Google map" /> -->
           <div class="h-64 w-full object-fit">
-            <LineChart :data="charts[currentChart]"></LineChart>
+            <!-- <LineChart :data="charts[currentChart]"></LineChart> -->
+            <Line :options="chartConfig.data" :data="chartConfig.options" />
           </div>
           <div class="w-full mt-6 flex items-center justify-center">
             <h1 class="font-bold text-blue text-2xl">{{ currentChart }} Line Chart</h1>
@@ -141,6 +141,10 @@
 <script>
 import { ref } from "vue";
 import LineChart from '@/components/charts/LineChart.vue'
+import { Line } from 'vue-chartjs'
+import { Chart as ChartJS, Title, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, ChartData } from 'chart.js'
+
+ChartJS.register(Title, Tooltip, Legend, PointElement, LineElement, CategoryScale, LinearScale)
 
 import temp from '@/components/charts/data/TemperatureData.js'
 import congestion from '@/components/charts/data/CongestionData.js'
@@ -160,6 +164,34 @@ export default {
         'Humidity': humi,
         'Rain': rain,
         'Congestion': congestion,
+      },
+      chartData: {
+        labels: Object.keys(this.data),
+        datasets: [
+          {
+            backgroundColor: 'blue',
+            borderColor: 'lightblue',
+            pointBorderColor: 'blue',
+            pointBorderWidth: 2,
+            data: Object.values(this.data),
+          },
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            ticks: {
+              display: false,
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false,
+          }
+        }
       }
     }
   },
