@@ -8,19 +8,25 @@
       <div class="w-full">
         <div class="w-full flex justify-between items-center">
           <h1 class="font-bold text-xl text-blue">Statistics</h1>
-          <div class="flex">
-            <button>
-              <font-awesome-icon @click="refresh"
-                class="text-blue mr-4 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
+          <div class="flex items-center">
+
+            <button @click="isRefresh = !isRefresh" class="flex flex-row items-center font-normal underline text-base text-red-500 cursor-pointer hover:text-dark_blue mr-4" v-if="isRefresh">
+              <font-awesome-icon 
+                class="mr-4 cursor-pointer"
                 icon="fa-solid fa-arrow-rotate-left" />
+              
+              Turn off refresh
             </button>
 
-            <!-- <button v-for="chart in Object.keys(charts)" :key="chart"
-              class="mx-2 text-blue hover:text-dark_blue transition ease-in-out duration-500" @click="() => {
-                currentChart = chart;
-              }">
-              {{ chart }}
-            </button> -->
+            
+            <button @click="isRefresh = !isRefresh" class="flex flex-row items-center font-normal underline text-base text-green-500 cursor-pointer hover:text-dark_blue mr-4" v-else>
+              <font-awesome-icon 
+                class="mr-4 cursor-pointer text-green-500 mr-4"
+                icon="fa-solid fa-arrow-rotate-left" />
+              
+              Turn on refresh
+            </button>
+
           </div>
         </div>
 
@@ -74,7 +80,9 @@
             <p class="font-semibold text-lg text-blue mx-4">to</p>
             <input type="datetime-local" class="text-blue outline-none text-lg font-normal w-72 py-1 px-6 rounded-lg"
               v-model="to" />
-            <button class="ml-10 font-semibold text-lg text-gray w-40 px-6 py-2 bg-blue text-white rounded cursor-pointer hover:bg-dark_blue" @click="filterCameraInfo">
+            <button
+              class="ml-10 font-semibold text-lg text-gray w-40 px-6 py-2 bg-blue text-white rounded cursor-pointer hover:bg-dark_blue"
+              @click="filterCameraInfo">
               Get data
             </button>
           </div>
@@ -91,7 +99,8 @@
       <div class="w-full">
         <div class="w-full flex flex-col justify-start">
           <h1 class="font-bold text-xl text-blue">Camera image</h1>
-          <img class="w-full object-cover border-2 border-blue mt-2" style="height: 300px" v-bind:src="img"
+          <img class="w-full object-cover border-2 border-blue mt-2" style="height: 300px"
+          v-bind:src="'data:image/png;base64,'+ cameraImage"
             alt="Traffic image" />
         </div>
       </div>
@@ -153,13 +162,14 @@
           </div>
 
           <div class="row w-full flex justfy-center items-center bg-red">
-            <button class="mt-4 w-full bg-red-500 px-10 py-2 rounded font-semibold text-lg text-gray hover:bg-red-800" @click="alert">Alert !</button>
+            <button class="mt-4 w-full bg-red-500 px-10 py-2 rounded font-semibold text-lg text-gray hover:bg-red-800"
+              @click="alert">Alert !</button>
           </div>
 
         </div>
       </div>
-      
-      
+
+
     </div>
   </div>
 </template>
@@ -183,10 +193,13 @@ export default {
     const average = ref(0.0);
     const route = useRoute()
 
+    // reset mode
+    const isRefresh = ref(true);
+
     // Camera info
     const longtitude = ref(null);
     const latitude = ref(null);
-    const img = ref(null)
+    const cameraImage = ref(null)
     const camid = ref(route.params.id);
     const ip = ref(null)
 
@@ -235,14 +248,14 @@ export default {
       charts.value["PPM"] = []
 
       const response = await instance.get('/cameras/' + route.params.id)
-      img.value = response.data.image
+      cameraImage.value = response.data.image
       longtitude.value = response.data.lng
       latitude.value = response.data.lat
       ip.value = response.data.ip
-      
+
       const current = new Date().getTime()
       response.data.event.forEach((e) => {
-        if (current - new Date(e.timeStamp).getTime() < constants.__data_period__ * 1000){
+        if (current - new Date(e.timeStamp).getTime() < constants.__data_period__ * 1000) {
           labels.value.push(e.timeStamp)
           charts.value["Temperature"].push(e.temperature)
           charts.value["Humidity"].push(e.humidity)
@@ -251,9 +264,6 @@ export default {
           charts.value["PPM"].push(e.ppm)
         }
       })
-      // console.log(response.data)
-      // console.log('ok')
-      // console.log(typeof currentChart.value)
     }
 
     async function alert() {
@@ -264,7 +274,7 @@ export default {
 
     async function filterCameraInfo() {
       const response = await instance.get('/cameras/ip/' + ip.value + '/' + from.value + '/' + to.value)
-      console.log(response.data)
+      // console.log(response.data)
       labels.value = []
       charts.value["Temperature"] = []
       charts.value["Humidity"] = []
@@ -280,13 +290,46 @@ export default {
         charts.value["Score"].push(e.score)
         charts.value["PPM"].push(e.ppm)
       })
+
+      isRefresh.value = false
+    }
+
+    async function getCurrentCameraInfo(from, to) {
+      const response = await instance.get('/cameras/ip/' + ip.value + '/' + from + '/' + to)
+      labels.value = []
+      charts.value["Temperature"] = []
+      charts.value["Humidity"] = []
+      charts.value["Rain"] = []
+      charts.value["Score"] = []
+      charts.value["PPM"] = []
+      cameraImage.value = response.data.image
+
+      // console.log('Image: ', cameraImage.value)
+
+      response.data.event.forEach((e) => {
+        labels.value.push(e.timeStamp)
+        charts.value["Temperature"].push(e.temperature)
+        charts.value["Humidity"].push(e.humidity)
+        charts.value["Rain"].push(e.rain)
+        charts.value["Score"].push(e.score)
+        charts.value["PPM"].push(e.ppm)
+      })
     }
 
     getCameraInfo()
 
-    async function refresh(){
+    async function refresh() {
+      if(!isRefresh.value) return
+
       console.log('Event: Reset!')
-      getCameraInfo()
+      // getCameraInfo()
+
+      const today = new Date()
+      const to = today.toISOString()
+      const from = new Date(today.getTime() - constants.__data_period__ * 1000)
+
+      getCurrentCameraInfo(from, to)
+
     }
 
     const chartData = computed(() => {
@@ -385,9 +428,10 @@ export default {
       }
     })
 
-    // setInterval(refresh, constants.__refresh_time__ * 1000)
+    setInterval(refresh, constants.__refresh_time__ * 1000 * 2)
 
     return {
+      isRefresh,
       refresh,
       average,
       from,
@@ -396,7 +440,7 @@ export default {
       longtitude,
       latitude,
       lastUpdated,
-      img,
+      cameraImage,
       chartData,
       chartOptions,
       currentChart,
