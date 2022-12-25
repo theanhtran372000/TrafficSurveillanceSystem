@@ -8,19 +8,122 @@
         <div class="w-full flex justify-between items-center">
           <h1 class="font-bold text-lg text-blue">Traffic Density Map</h1>
           <div class="flex items-center">
-            <label class="font-normal text-blue underline cursor-pointer text-base mr-8" @click="createRandomSamples">
-              Random 1000 samples
-            </label> 
-            <font-awesome-icon
+
+            <!--  Random sampling data -->
+            <button class= "text-blue mr-8 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500" @click="createRandomSamples">
+              <font-awesome-icon icon="fa-solid fa-bolt" /> Random 1000 samples
+            </button> 
+
+            <!-- Add camera -->
+            <button 
+              class="text-blue mr-8 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
+              data-bs-toggle="modal" 
+              data-bs-target="#exampleModal">
+              <font-awesome-icon icon="fa-solid fa-plus"/> Add cameras
+            </button>
+
+            <!-- Modal -->
+            <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
+              id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog relative w-auto pointer-events-none">
+                <div
+                  class="modal-content border-none shadow-lg relative flex flex-col w-full pointer-events-auto bg-white bg-clip-padding rounded-md outline-none text-current">
+                  <div
+                    class="modal-header flex flex-shrink-0 items-center justify-between p-4 border-b border-light_blue rounded-t-md">
+                    <h5 class="text-xl font-bold leading-normal text-blue" id="exampleModalLabel">Add new camera</h5>
+                    <button type="button"
+                      class="btn-close box-content w-4 h-4 p-1 text-light_blue border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline"
+                      data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body relative p-4">
+
+                    <!-- IP -->
+                    <label class="flex flex-col mt-4" for="username">
+                      <span class="text-blue font-semibold text-xl ml-1">Camera IP</span>
+                      <input
+                        id="username"
+                        type="text"
+                        class="border-light_blue border-2 shadow-lg placeholder-light_blue text-lg py-2 px-2 rounded-lg outline-none text-blue mt-1.5"
+                        v-model="camAdded.camIP"
+                        placeholder="Input cam IP address"
+                      />
+                    </label>
+
+                    <!-- Latitude -->
+                    <label class="flex flex-col mt-4" for="latitude">
+                      <span class="text-blue font-semibold text-xl ml-1">Latitude</span>
+                      <input
+                        id="latitude"
+                        type="number"
+                        class="border-light_blue border-2 shadow-lg placeholder-light_blue text-lg py-2 px-2 rounded-lg outline-none text-blue mt-1.5"
+                        v-model="camAdded.camLat"
+                        placeholder="Input cam latitude"
+                      />
+                    </label>
+
+                    <!-- Camera longtitude -->
+                    <label class="flex flex-col my-4" for="longitude">
+                      <span class="text-blue font-semibold text-xl ml-1">Longtitude</span>
+                      <input
+                        id="longitude"
+                        type="number"
+                        class="border-light_blue border-2 shadow-lg placeholder-light_blue text-lg py-2 px-2 rounded-lg outline-none text-blue mt-1.5"
+                        v-model="camAdded.camLng"
+                        placeholder="Input cam longtide"
+                      />
+                    </label>
+                  
+                    <div class="row mt-4" v-if="addError">
+                      <span class="text-blue text-base font-semibold ml-2"> {{ addError }} </span>
+                    </div>
+
+                  </div>
+                  <div
+                    class="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-light_blue rounded-b-md">
+                    <button type="button" class="px-6
+                      py-2.5
+                      bg-purple-600
+                      text-white
+                      font-bold
+                      text-lg
+                      leading-tight
+                      rounded
+                      w-32
+                      shadow-md
+                      hover:bg-purple-700 hover:shadow-lg
+                      focus:bg-purple-700 focus:shadow-lg focus:outline-none focus:ring-0
+                      active:bg-purple-800 active:shadow-lg
+                      transition
+                      duration-150
+                      ease-in-out" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="px-6
+                      py-2.5
+                      bg-blue
+                      text-white
+                      font-bold
+                      text-lg
+                      w-32
+                      leading-tight
+                      rounded
+                      shadow-md
+                      hover:bg-blue hover:shadow-lg
+                      focus:bg-blue focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg
+                      transition
+                      duration-150
+                      ease-in-out
+                      ml-4" @click="onCameraAdd">Add</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <button 
               class="text-blue mr-4 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
-              icon="fa-solid fa-plus"
-              @click="onCameraAdd"
-            />
-            <font-awesome-icon
-              class="text-blue mr-4 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
-              icon="fa-solid fa-arrow-rotate-left"
-              @click="onResetMap"
-            />
+              @click="onResetMap">
+              <font-awesome-icon icon="fa-solid fa-arrow-rotate-left"/> Refresh
+            </button>
+
           </div>
         </div>
 
@@ -51,17 +154,17 @@
           <div class="w-full mt-2 flex items-center justify-end">
             <div class="flex justify-center items-center">
               <div class="flex items-center mr-6">
-                <font-awesome-icon class="text-normal text-green-600 mr-2" icon="fa-solid fa-location-dot" />
+                <font-awesome-icon class="text-normal text-green-500 mr-2" icon="fa-solid fa-location-dot" />
                 <p class="font-normal text-blue text-base">Less than {{ lowerBound }}</p>
               </div>
 
               <div class="flex items-center mr-6">
-                <font-awesome-icon class="text-base text-yellow-600 mr-2" icon="fa-solid fa-location-dot" />
+                <font-awesome-icon class="text-base text-yellow-500 mr-2" icon="fa-solid fa-location-dot" />
                 <p class="font-normal text-blue text-base">From {{ lowerBound }} to {{ upperBound }}</p>
               </div>
 
               <div class="flex items-center mr-6">
-                <font-awesome-icon class="text-base text-red-600 mr-2" icon="fa-solid fa-location-dot" />
+                <font-awesome-icon class="text-base text-red-500 mr-2" icon="fa-solid fa-location-dot" />
                 <p class="font-normal text-blue text-base">More than {{ upperBound }}</p>
               </div>
               
@@ -159,7 +262,7 @@
               </div>
               <div class="flex justify-between" style="flex: 4">
                 <select
-                  class="text-blue cursor-pointer outline-none font-normal w-32 py-2 px-1 rounded-lg mr-4"
+                  class="text-blue cursor-pointer outline-none font-normal w-32 py-2 rounded-lg mr-4"
                   v-model="district"
                   style="flex: 5"
                 >
@@ -198,12 +301,12 @@
               <div class="flex justify-between items-center" style="flex: 4">
                 <!-- Select date time -->
                 <p
-                  class="text-blue outline-none font-normal w-48 py-2 px-2 rounded-lg">
+                  class="text-blue outline-none font-normal w-48 py-2 px-1 rounded-lg">
                   Display markers within
                 </p>
 
                 <font-awesome-icon
-                  class="text-blue font-normal text-sm mx-2"
+                  class="text-blue font-normal text-sm"
                   icon="fa-solid fa-plus-minus"
                 />
                 
@@ -216,7 +319,7 @@
 
                 <!-- Input time units -->
                 <select
-                  class="text-blue text-center outline-none font-normal w-20 py-2 px-1 rounded-lg"
+                  class="text-blue text-center outline-none font-normal w-20 py-2 rounded-lg"
                   v-model="unit"
                 >
                   <option
@@ -349,7 +452,7 @@
                   <p
                     class="text-blue cursor-pointer outline-none font-normal w-32 py-2 px-1 rounded-lg mr-4"
                     style="flex: 5">
-                    {{ currentMarker._id }}
+                    {{ currentMarker.id }}
                   </p>
                 </div>
               </label>
@@ -472,44 +575,102 @@
 </template>
 
 <script>
-import { ref, computed } from "vue";
+import { ref, computed, watchEffect } from "vue";
+import { useRouter } from "vue-router"
 import constants from "@/constants";
 import { store } from "@/store/store";
 import { round } from "@/utils/number"
 import { randomSamples } from "@/utils/random"
+import instance from "@/utils/axios";
+import { getTimeRange, formatUrl } from '@/utils/time'
+import { formatMarkers } from '@/utils/preprocess'
+import { isOk } from "@/utils/response";
 
 export default {
   setup() {
-    // Location
-    const districtList = ref(null);
-    const district = ref(constants.__default_district__);
-    const cityList = ref(null);
-    const city = ref(constants.__default_city__);
+    const router = useRouter()
 
-    // Get location list
-    districtList.value = ["Ha Dong", "Cau Giay", "Hai Ba Trung"]
-    cityList.value = ["Hanoi", "Hai Phong", "Da Nang"]
+    // Location
+    const districtList = ref([]);
+    const district = ref( null);
+    const cityList = ref([]);
+    const city = ref(null);
+    const locationData = ref(null)
+
+    // Map center coordinate
+    const mapCenter = ref({
+      lat: 0,
+      lng: 0
+    })
+    
+    // Get location list: Done
+    async function getAllCity(){
+      const response = await instance.get('/city')
+      locationData.value = response.data
+
+      console.log('City data: ', locationData.value)
+    
+      // Get city list
+      locationData.value.forEach((city) => {
+        cityList.value.push(city.name)
+      })
+
+      if(cityList.value.length > 0) city.value = cityList.value[0]
+    }
+
+    // Setup watch effect on city
+    const cityWatcher = watchEffect(() => {
+      if (city.value) {
+        // Get district list
+        locationData.value.forEach((c) => {
+          if(c.name === city.value) {
+            //Reset district list
+            districtList.value = []
+
+            // Update district list
+            c.districts.forEach((d => {
+              districtList.value.push(d.name)
+            }))
+          }
+        })
+
+        // Init district
+        if(districtList.value.length > 0) district.value = districtList.value[0]
+      }
+    })
+
+    // Get map center coordinate: Done
+    // Setup watch effect on district
+    const districtWatcher = watchEffect(() => {
+      if (city.value && district.value) {
+        locationData.value.forEach((c) => {
+          if (c.name === city.value){
+            // Update district list
+            c.districts.forEach((d => {
+              if(d.name === district.value){
+                mapCenter.value = {
+                  lat: Number(d.lat),
+                  lng: Number(d.lng)
+                }
+
+                console.log('Map center: ', mapCenter.value)
+              }
+            }))
+          }
+        })
+      }
+    })
+
+    getAllCity()
 
     // Time delta
-    const unitList = ref(["seconds", "minutes", "hours"]);
-    const unit = ref(constants.__default_time_unit__);
+    const unitList = ref([
+      constants.__time_unit__.HOUR,
+      constants.__time_unit__.MINUTE,
+      constants.__time_unit__.SECOND,
+    ]);
+    const unit = ref(unitList.value[1]);
     const timedelta = ref(constants.__default_time_delta__);
-
-    // // Scan Configuration
-    // const scanRadius = ref(constants.__default_scan_radius__);
-    // const threshold = ref(constants.__default_congestion_threshold__);
-
-    // // Map configuration
-    // const showRedZones = ref(constants.__default_red_zones);
-    
-    // Map center coordinate
-    const mapCenter = ref(null)
-
-    // Get map center value
-    mapCenter.value = {
-      "lat": 20.995, 
-      "lng": 105.8454742
-    }
 
     // List of markers
     const mapMarkers = ref(null)
@@ -517,64 +678,16 @@ export default {
     // Get data from server
     mapMarkers.value = [
       {
-        "_id": 1,
+        "id": 1,
         "position": {
-          "lat": 20.9839618, 
-          "lng": 105.8354742  
+          "lat": 0, 
+          "lng": 0  
         },
-        "score": 4.2,
-        "temperature": 27,
-        "humidity": 65,
-        "rain": 45,
-        "ppm": 542
-      },
-      {
-        "_id": 2,
-        "position": {
-          "lat": 20.99819618, 
-          "lng": 105.8354742  
-        },
-        "score": 2.4,
-        "temperature": 27,
-        "humidity": 65,
-        "rain": 45,
-        "ppm": 542
-      },
-      {
-        "_id": 3,
-        "position": {
-          "lat": 20.92829618, 
-          "lng": 105.8154742  
-        },
-        "score": 4.0,
-        "temperature": 27,
-        "humidity": 65,
-        "rain": 45,
-        "ppm": 542
-      },
-      {
-        "_id": 4,
-        "position": {
-          "lat": 20.998298, 
-          "lng": 105.83742  
-        },
-        "score": 1.2,
-        "temperature": 27,
-        "humidity": 65,
-        "rain": 45,
-        "ppm": 542
-      },
-      {
-        "_id": 5,
-        "position": {
-          "lat": 20.9829618, 
-          "lng": 105.8354  
-        },
-        "score": 3.3,
-        "temperature": 17,
-        "humidity": 15,
-        "rain": 49,
-        "ppm": 545
+        "score": 0,
+        "temperature": 0,
+        "humidity": 0,
+        "rain": 0,
+        "ppm": 0
       }
     ]
 
@@ -621,40 +734,90 @@ export default {
       }
     }
 
+    // Add camera
+    const camAdded = ref({
+      camIP: "Camera IP",
+      camLat: 0,
+      camLng: 0
+    })
+
     // Marker hiện tại
     const currentMarker = ref(null)
 
     function onMarkerClick(event, marker) {
-      console.log('Info: ', marker)
+      console.log('Marker Info: ', marker)
       currentMarker.value = marker
     }
 
-    function onApplyChange() {
-      console.log('Appply changes!')
+    // Get data from server: Done
+    async function onApplyChange() {
+      console.log('Event: Appply changes!')
 
       // Request to server to get data
+      const timeRange = getTimeRange(timedelta.value, unit.value)
+
+      const url = formatUrl(timeRange)
+      console.log('Url: ', url)
+      const response = await instance.get(url)
+      const events = formatMarkers(response.data)
+
+      // Update to mapMarkers
+      mapMarkers.value = events
+      console.log('Markers: ', mapMarkers.value)
     }
 
+    // Next to page detail: Done
     function onShowDetail() {
-      console.log('Show detail!')
+      console.log('Event: Show detail!')
 
       // Move to Detail page
+      router.push({
+        name: 'detail',
+        params: {
+          id: currentMarker.value.id
+        }
+      })
+    }
+    
+    // Add camera: Doing
+    const addError = ref(null)
+    async function onCameraAdd() {
+      addError.value = null
+      console.log('Event: Camera added!')
+      try {
+        const response = await instance.post('/cameras', {
+          "name": "cam",
+          "ip": camAdded.value.camIP,
+          "lat": camAdded.value.camLat,
+          "lon": camAdded.value.camLng,
+          "status": "ACTIVE"
+        })
+
+        if (!isOk(response)) throw new Error('Failed to add new camera!')
+      } catch (error) {
+        console.log('Error: ', error)
+        addError.value = error.message
+      }
     }
 
-    function onCameraAdd() {
-      console.log('Camera added!')
-    }
-
+    // Reset maps: Done
     function onResetMap() {
-      console.log('Reset map!')
+      console.log('Event: Reset map!')
       onApplyChange()
     }
 
+    // Random samples: Done
     function createRandomSamples(){
+      console.log('Event: Create 1000 random cameras')
       mapMarkers.value = randomSamples()
     }
 
     return {
+      addError,
+      cityWatcher,
+      districtWatcher,
+      locationData,
+      camAdded,
       createRandomSamples,
       onResetMap,
       onCameraAdd,

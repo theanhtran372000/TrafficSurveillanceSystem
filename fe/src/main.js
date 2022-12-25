@@ -20,6 +20,7 @@ import {
   faPlusMinus,
   faRightFromBracket,
   faLocationDot,
+  faBolt
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add([
@@ -31,10 +32,12 @@ library.add([
   faPlusMinus,
   faRightFromBracket,
   faLocationDot,
+  faBolt
 ]);
 
 import VueGoogleMaps from '@fawmi/vue-google-maps'
 import C from "./constants";
+import 'tw-elements';
 
 // Create app
 const app = createApp(App);

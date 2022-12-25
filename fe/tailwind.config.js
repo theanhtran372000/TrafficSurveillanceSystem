@@ -1,7 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 
 module.exports = {
-  content: ["./public/*.{html, js}", "./src/**/*.{vue,js,ts,jsx,tsx}"],
+  content: [
+    "./public/*.{html, js}", 
+    "./src/**/*.{vue,js,ts,jsx,tsx}",
+    "./src/**/*.{html,js}",
+    "./node_modules/tw-elements/dist/js/**/*.js"
+  ],
   theme: {
     extend: {
       colors: {
@@ -15,5 +20,7 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('tw-elements/dist/plugin')
+  ],
 };

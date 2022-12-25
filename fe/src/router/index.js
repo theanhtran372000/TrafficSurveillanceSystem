@@ -54,7 +54,7 @@ const routes = [
       import(/* webpackChunkName: "home" */ "../views/HomeView.vue"),
   },
   {
-    path: "/detail",
+    path: "/detail/:id",
     name: "detail",
     meta: {
       layout: "HeaderLayout",
