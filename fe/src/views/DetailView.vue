@@ -15,28 +15,41 @@
                 icon="fa-solid fa-arrow-rotate-left" />
             </button>
 
-            <button v-for="chart in Object.keys(charts)" :key="chart"
+            <!-- <button v-for="chart in Object.keys(charts)" :key="chart"
               class="mx-2 text-blue hover:text-dark_blue transition ease-in-out duration-500" @click="() => {
                 currentChart = chart;
               }">
-              <!-- <font-awesome-icon
-                class="text-blue mr-4 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
-                icon="fa-solid fa-arrow-right" /> -->
               {{ chart }}
-            </button>
-
+            </button> -->
           </div>
         </div>
 
         <div class="map w-full mt-2">
-          <!-- <img class="w-full object-fit border-2 border-blue" style="height: 360px"
-            :src="require('@/assets/images/linechart.png')" alt="Google map" /> -->
-          <div class="h-64 w-full object-fit">
-            <!-- <LineChart :data="charts[currentChart]"></LineChart> -->
-            <Line :options="chartConfig.data" :data="chartConfig.options" />
+          <div class="h-56 w-full object-fit">
+            <Line :data="chartData" :options="chartOptions" />
           </div>
-          <div class="w-full mt-6 flex items-center justify-center">
-            <h1 class="font-bold text-blue text-2xl">{{ currentChart }} Line Chart</h1>
+          <div class="w-full my-3 flex items-center justify-center">
+            <h1 class="font-bold text-blue text-2xl">Score Line Chart</h1>
+          </div>
+        </div>
+
+        <div class="flex flex-row items-center justify-between">
+          <div class="w-full mr-10">
+            <div class="h-32 w-full object-fit">
+              <Line :data="temphumi" :options="subOptions" />
+            </div>
+            <div class="w-full my-4 flex items-center justify-center">
+              <h1 class="font-bold text-blue text-base">Temperature/Humidity Line Chart</h1>
+            </div>
+          </div>
+
+          <div class="w-full">
+            <div class="h-32 w-full object-fit">
+              <Line :data="rainppm" :options="subOptions" />
+            </div>
+            <div class="w-full my-4 flex items-center justify-center">
+              <h1 class="font-bold text-blue text-base">Rain/PPM Chart</h1>
+            </div>
           </div>
         </div>
       </div>
@@ -44,10 +57,10 @@
       <!-- Config display -->
       <div class="w-full mt-6">
         <div class="flex justify-between items-center pt-4">
-          <div class="flex items-center justify-center">
+          <!-- <div class="flex items-center justify-center">
             <p class="font-semibold text-lg text-blue mr-4">Average</p>
             <span class="bg-white px-6 py-1 rounded-lg text-blue font-normal text-lg">{{ average }}</span>
-          </div>
+          </div> -->
 
           <div class="flex items-center justify-center">
             <p class="font-semibold text-lg text-blue mx-4">From</p>
@@ -56,28 +69,30 @@
             <p class="font-semibold text-lg text-blue mx-4">to</p>
             <input type="datetime-local" class="text-blue outline-none text-lg font-normal w-72 py-1 px-6 rounded-lg"
               v-model="to" />
+            <button class="ml-10 px-6 py-2 bg-blue text-white rounded" @click="filterCameraInfo">
+              OK
+            </button>
           </div>
-        </div>
 
+        </div>
         <div class="map"></div>
       </div>
-      <button class="flex float-right mt-7 mr-2 bg-blue py-2 px-7 text-white rounded" @click="filterByTime">
-        OK
-      </button>
+
     </div>
 
     <!-- Camera display -->
-    <div class="w-full mt-20 mb-6 mr-6 rounded-lg bg-gray p-8" style="flex: 1">
+    <div class="w-full mt-20 mb-6 mr-6 rounded-lg bg-gray p-5" style="flex: 1">
       <!-- Camera image -->
       <div class="w-full">
         <div class="w-full flex flex-col justify-start">
           <h1 class="font-bold text-lg text-blue">Camera image</h1>
-          <img class="w-full object-cover border-2 border-blue" style="height: 300px"
-            :src="require('@/assets/images/traffic.jpg')" alt="Traffic image" />
+          <img class="w-full object-cover border-2 border-blue" style="height: 300px" v-bind:src="img"
+            alt="Traffic image" />
         </div>
       </div>
+
       <!-- Camera info -->
-      <div class="w-full mt-8">
+      <div class="w-full mt-5">
         <div class="w-full flex flex-col justify-start">
           <h1 class="font-bold text-lg text-blue">Camera infomation</h1>
 
@@ -110,7 +125,6 @@
 
                 <!-- Meters -->
                 <span class="text-lg font-semibold text-blue text-normal mr-4">Latitude</span>
-
                 <p class="bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg">
                   {{ latitude }}
                 </p>
@@ -134,69 +148,45 @@
           </div>
         </div>
       </div>
+      <button class="float-right mt-4 bg-[#f0ad4e] px-5 py-2 rounded" @click="alert">Alert !</button>
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from "vue";
-import LineChart from '@/components/charts/LineChart.vue'
+import { ref, computed } from "vue";
 import { Line } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, ChartData } from 'chart.js'
 
 ChartJS.register(Title, Tooltip, Legend, PointElement, LineElement, CategoryScale, LinearScale)
 
-import temp from '@/components/charts/data/TemperatureData.js'
-import congestion from '@/components/charts/data/CongestionData.js'
-import humi from '@/components/charts/data/HumidityData.js'
-import rain from '@/components/charts/data/RainData.js'
-
-// import 
-// import constants from "@/constants";
+import instance from "@/utils/axios";
+import { useRoute } from "vue-router";
+import { isOk } from "@/utils/response";
+// import { resolveNaptr } from "dns";
 
 export default {
-  components: { LineChart },
-  data() {
-    return {
-      currentChart: 'Temperature',
-      charts: {
-        'Temperature': temp,
-        'Humidity': humi,
-        'Rain': rain,
-        'Congestion': congestion,
-      },
-      chartData: {
-        labels: Object.keys(this.data),
-        datasets: [
-          {
-            backgroundColor: 'blue',
-            borderColor: 'lightblue',
-            pointBorderColor: 'blue',
-            pointBorderWidth: 2,
-            data: Object.values(this.data),
-          },
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: {
-            ticks: {
-              display: false,
-            }
-          }
-        },
-        plugins: {
-          legend: {
-            display: false,
-          }
-        }
-      }
-    }
-  },
+  components: { Line },
   setup() {
     const average = ref(0.0);
+    const route = useRoute()
+
+    // Camera info
+    const longtitude = ref(null);
+    const latitude = ref(null);
+    const img = ref(null)
+    const camid = ref(route.params.id);
+    const ip = ref(null)
+
+    const labels = ref([])
+    const currentChart = ref('Temperature')
+    const charts = ref({
+      'Score': [],
+      'Temperature': [],
+      'Humidity': [],
+      'Rain': [],
+      'PPM': []
+    })
 
     // Get current time
     // Time
@@ -221,15 +211,149 @@ export default {
     const from = ref(localDatetime);
     const to = ref(localDatetime);
 
-    // Camera info
-    const camid = ref("askdnashdoasj89a09u0");
-    const longtitude = ref(128.131);
-    const latitude = ref(90.123);
-
     const lastUpdated = ref(localDatetime);
 
-    console.log(localDatetime);
-    // console.log(typeof localDatetime)
+    async function getCameraInfo() {
+      const response = await instance.get('/cameras/' + route.params.id)
+      img.value = response.data.image
+      longtitude.value = response.data.lng
+      latitude.value = response.data.lat
+      ip.value = response.data.ip
+      response.data.event.forEach((e) => {
+        labels.value.push(e.timeStamp)
+        charts.value["Temperature"].push(e.temperature)
+        charts.value["Humidity"].push(e.humidity)
+        charts.value["Rain"].push(e.rain)
+        charts.value["Score"].push(e.score)
+        charts.value["PPM"].push(e.ppm)
+      })
+      // console.log(response.data)
+      // console.log('ok')
+      // console.log(typeof currentChart.value)
+    }
+
+    async function alert() {
+      const response = await instance.post('/sensors')
+      if (!isOk(response)) { console.log('ok') }
+
+    }
+
+    async function filterCameraInfo() {
+      const response = await instance.get('/cameras/ip/' + ip.value + '/' + from.value + '/' + to.value)
+      console.log(response.data)
+      labels.value = []
+      charts.value["Temperature"] = []
+      charts.value["Humidity"] = []
+      charts.value["Rain"] = []
+      charts.value["Score"] = []
+      charts.value["PPM"] = []
+      response.data.event.forEach((e) => {
+        labels.value.push(e.timeStamp)
+        charts.value["Temperature"].push(e.temperature)
+        charts.value["Humidity"].push(e.humidity)
+        charts.value["Rain"].push(e.rain)
+        charts.value["Score"].push(e.score)
+        charts.value["PPM"].push(e.ppm)
+      })
+    }
+
+    getCameraInfo()
+
+    const chartData = computed(() => {
+      return {
+        labels: Object.values(labels.value),
+        datasets: [
+          {
+            backgroundColor: 'blue',
+            borderColor: 'lightblue',
+            pointBorderColor: 'blue',
+            pointBorderWidth: 2,
+            data: Object.values(charts.value.Score),
+          },
+        ]
+      }
+    })
+
+    const chartOptions = computed(() => {
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            ticks: {
+              display: false,
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false,
+          }
+        }
+      }
+    })
+
+    const subOptions = computed(() => {
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            ticks: {
+              display: false,
+            }
+          }
+        },
+      }
+    })
+
+    const temphumi = computed(() => {
+      return {
+        labels: Object.values(labels.value),
+        datasets: [
+          {
+            label: 'Temp',
+            backgroundColor: '#ff0000',
+            borderColor: '#fa9191',
+            pointBorderColor: '#ff0000',
+            pointBorderWidth: 0.1,
+            data: Object.values(charts.value.Temperature),
+          },
+          {
+            label: 'Humi',
+            backgroundColor: 'green',
+            borderColor: 'lightgreen',
+            pointBorderColor: 'green',
+            pointBorderWidth: 0.1,
+            data: Object.values(charts.value.Humidity),
+          },
+        ]
+      }
+    })
+
+    const rainppm = computed(() => {
+      return {
+        labels: Object.values(labels.value),
+        datasets: [
+          {
+            label: 'Rain',
+            backgroundColor: '#f77002',
+            borderColor: '#f7bcbc',
+            pointBorderColor: '#f77002',
+            pointBorderWidth: 0.1,
+            data: Object.values(charts.value.Rain),
+          },
+          {
+            label: 'PPM',
+            backgroundColor: '#f702d6',
+            borderColor: '#ff9ef2',
+            pointBorderColor: '#f702d6',
+            pointBorderWidth: 0.1,
+            data: Object.values(charts.value.PPM),
+          },
+        ]
+      }
+    })
 
     return {
       average,
@@ -239,6 +363,16 @@ export default {
       longtitude,
       latitude,
       lastUpdated,
+      img,
+      chartData,
+      chartOptions,
+      currentChart,
+      charts,
+      temphumi,
+      rainppm,
+      subOptions,
+      alert,
+      filterCameraInfo
     };
   },
 };

@@ -20,7 +20,6 @@ export default {
     data() {
         return {
             myChart: null,
-
             chartConfig: {
                 type: 'line',
                 data: {
@@ -71,9 +70,11 @@ export default {
         data(newval) {
             this.myChart.data.labels = Object.keys(newval)
             this.myChart.data.datasets[0].data = Object.values(newval)
-            console.log(this.myChart.data.labels)
-            console.log(this.myChart.data.datasets[0].data)
+            // console.log(this.myChart.data.labels)
+            // console.log(this.myChart.data.datasets[0].data)
             // this.myChart.clear()
+            this.myChart.destroy()
+            this.renderLineChart()
         }
     },
 }
