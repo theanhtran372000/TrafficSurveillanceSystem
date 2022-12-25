@@ -5,26 +5,26 @@
 <script>
 import { Line } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement } from 'chart.js'
-import temp from './data/TemperatureData'
 
 ChartJS.register(Title, Tooltip, Legend, PointElement, LineElement, CategoryScale, LinearScale)
 
 export default {
     name: 'Temperature',
     components: { Line },
+    props: {
+        data: Object,
+    },
     data() {
         return {
             chartData: {
-                labels: Object.keys( temp ),
+                labels: Object.keys(this.data),
                 datasets: [
                     {
-                        // label: 'Data One',
                         backgroundColor: 'blue',
-                        // pointBackgroundColor: 'blue',
                         borderColor: 'lightblue',
                         pointBorderColor: 'blue',
                         pointBorderWidth: 2,
-                        data: Object.values( temp ),
+                        data: Object.values(this.data),
                     },
                 ]
             },

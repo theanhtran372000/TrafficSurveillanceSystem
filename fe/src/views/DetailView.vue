@@ -15,16 +15,15 @@
                 icon="fa-solid fa-arrow-rotate-left" />
             </button>
 
-            <button
-              v-for="chart in charts"
-              :key="chart"
+            <button v-for="chart in Object.keys(charts)" :key="chart"
               class="mx-2 text-blue hover:text-dark_blue transition ease-in-out duration-500"
-              @click="currentChart = chart"
-            >
+              @click="() => {
+                currentChart = chart;
+              }">
               <!-- <font-awesome-icon
                 class="text-blue mr-4 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
                 icon="fa-solid fa-arrow-right" /> -->
-                {{ chart }}
+              {{ chart }}
             </button>
 
           </div>
@@ -34,7 +33,7 @@
           <!-- <img class="w-full object-fit border-2 border-blue" style="height: 360px"
             :src="require('@/assets/images/linechart.png')" alt="Google map" /> -->
           <div class="h-64 w-full object-fit">
-            <component :is="currentChart"></component>
+            <LineChart :data="charts[currentChart]"></LineChart>
           </div>
           <div class="w-full mt-6 flex items-center justify-center">
             <h1 class="font-bold text-blue text-2xl">{{ currentChart }} Line Chart</h1>
@@ -62,7 +61,7 @@
 
         <div class="map"></div>
       </div>
-      <button class="flex float-right mt-7 mr-2 bg-blue py-2 px-7 text-white rounded">
+      <button class="flex float-right mt-7 mr-2 bg-blue py-2 px-7 text-white rounded" @click="filterByTime">
         OK
       </button>
     </div>
@@ -141,18 +140,27 @@
 
 <script>
 import { ref } from "vue";
-import Temperature from '@/components/charts/TemperatureChart.vue'
-import Humidity from '@/components/charts/HumidityChart.vue'
-import Rain from '@/components/charts/RainChart.vue'
-import Congestion from '@/components/charts/CongestionChart.vue'
+import LineChart from '@/components/charts/LineChart.vue'
+
+import temp from '@/components/charts/data/TemperatureData.js'
+import congestion from '@/components/charts/data/CongestionData.js'
+import humi from '@/components/charts/data/HumidityData.js'
+import rain from '@/components/charts/data/RainData.js'
+
+// import 
 // import constants from "@/constants";
 
 export default {
-  components: { Temperature, Humidity, Rain, Congestion },
+  components: { LineChart },
   data() {
     return {
       currentChart: 'Temperature',
-      charts: ['Temperature', 'Humidity', 'Rain', 'Congestion']
+      charts: {
+        'Temperature': temp,
+        'Humidity': humi,
+        'Rain': rain,
+        'Congestion': congestion,
+      }
     }
   },
   setup() {
