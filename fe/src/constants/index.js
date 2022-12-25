@@ -21,5 +21,7 @@ export default {
     SECOND: "seconds",
     MINUTE: "minutes",
     HOUR: "hours"
-  }
+  },
+  __data_period__: 5000 * 60, // seconds
+  __refresh_time__: 5, // seconds
 };

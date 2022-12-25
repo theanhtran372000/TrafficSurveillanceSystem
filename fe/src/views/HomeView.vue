@@ -63,6 +63,10 @@
                       <span class="text-blue text-base font-semibold ml-2"> {{ addError }} </span>
                     </div>
 
+                    <div class="row mt-4" v-if="addSuccess">
+                      <span class="text-blue text-base font-semibold ml-2"> {{ addSuccess }} </span>
+                    </div>
+
                   </div>
                   <div
                     class="modal-footer flex flex-shrink-0 flex-wrap items-center justify-end p-4 border-t border-light_blue rounded-b-md">
@@ -157,6 +161,7 @@
           <h1 class="font-bold text-lg text-blue">Analytics</h1>
           <div class="flex justify-between items-center pt-4">
 
+            <!-- Number of markers -->
             <div class="flex flex-col justify-center items-center">
               <h1 class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500">
                 {{ mapMarkers.length }}
@@ -164,31 +169,70 @@
               <p class="font-normal text-base text-blue">Cameras</p>
             </div>
 
-            <div class="flex flex-col justify-center items-center">
-              <h1 class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500">
+            <!-- Average score -->
+            <div v-if="!isNaN(averageStats.score)" class="flex flex-col justify-center items-center">
+              <h1
+                class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500"
+              >
                 {{ round(averageStats.score, 2) }}
               </h1>
               <p class="font-normal text-base text-blue">Avg. Density</p>
             </div>
 
-            <div class="flex flex-col justify-center items-center">
-              <h1 class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500">
-                {{ round(averageStats.temperature, 2) }}
+            <div v-else class="flex flex-col justify-center items-center">
+              <h1
+                class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500"
+              >
+                -|-
+              </h1>
+              <p class="font-normal text-base text-blue">Avg. Density</p>
+            </div>
+
+            <!-- Average temperature -->
+            <div v-if="!isNaN(averageStats.temperature)" class="flex flex-col justify-center items-center">
+              <h1
+                class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500"
+              >
+              {{ round(averageStats.temperature, 2) }}
               </h1>
               <p class="font-normal text-base text-blue">Avg. Temp</p>
             </div>
 
-            <div class="flex flex-col justify-center items-center">
-              <h1 class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500">
-                {{ round(averageStats.humidity, 2) }}
+            <div v-else class="flex flex-col justify-center items-center">
+              <h1
+                class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500"
+              >
+                -|-
+              </h1>
+              <p class="font-normal text-base text-blue">Avg. Density</p>
+            </div>
+
+            <!-- Average humidity -->
+            <div v-if="!isNaN(averageStats.humidity)" class="flex flex-col justify-center items-center">
+              <h1
+                class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500"
+              >
+              {{ round(averageStats.humidity, 2) }}
               </h1>
               <p class="font-normal text-base text-blue">
                 Avg. Humi
               </p>
             </div>
 
-            <div class="flex flex-col justify-center items-center">
-              <h1 class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500">
+            <div v-else class="flex flex-col justify-center items-center">
+              <h1
+                class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500"
+              >
+                -|-
+              </h1>
+              <p class="font-normal text-base text-blue">Avg. Density</p>
+            </div>
+
+            <!-- Average rain -->
+            <div v-if="!isNaN(averageStats.rain)" class="flex flex-col justify-center items-center">
+              <h1
+                class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500"
+              >
                 {{ round(averageStats.rain, 2) }}
               </h1>
               <p class="font-normal text-base text-blue">
@@ -196,13 +240,34 @@
               </p>
             </div>
 
-            <div class="flex flex-col justify-center items-center">
-              <h1 class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500">
+            <div v-else class="flex flex-col justify-center items-center">
+              <h1
+                class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500"
+              >
+                -|-
+              </h1>
+              <p class="font-normal text-base text-blue">Avg. Density</p>
+            </div>
+
+            <!-- Average air quarlity -->
+            <div v-if="!isNaN(averageStats.ppm)" class="flex flex-col justify-center items-center">
+              <h1
+                class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500"
+              >
                 {{ round(averageStats.ppm, 2) }}
               </h1>
               <p class="font-normal text-base text-blue">
                 Avg. Air
               </p>
+            </div>
+
+            <div v-else class="flex flex-col justify-center items-center">
+              <h1
+                class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500"
+              >
+                -|-
+              </h1>
+              <p class="font-normal text-base text-blue">Avg. Density</p>
             </div>
 
           </div>
@@ -458,12 +523,7 @@
           </div>
 
         </div>
-
-
-
       </div>
-
-
     </div>
   </div>
 </template>
@@ -650,7 +710,7 @@ export default {
       // Request to server to get data
       const timeRange = getTimeRange(timedelta.value, unit.value)
 
-      const url = formatUrl(timeRange)
+      const url = formatUrl('/cameras/events', timeRange)
       console.log('Url: ', url)
       const response = await instance.get(url)
       const events = formatMarkers(response.data)
@@ -675,22 +735,32 @@ export default {
 
     // Add camera: Doing
     const addError = ref(null)
+    const addSuccess = ref(null)
     async function onCameraAdd() {
       addError.value = null
+      addSuccess.value = null
       console.log('Event: Camera added!')
       try {
         const response = await instance.post('/cameras', {
           "name": "cam",
           "ip": camAdded.value.camIP,
           "lat": camAdded.value.camLat,
-          "lon": camAdded.value.camLng,
+          "lng": camAdded.value.camLng,
           "status": "ACTIVE"
         })
 
-        if (!isOk(response)) throw new Error('Failed to add new camera!')
+        console.log(camAdded.value)
+
+        if (!isOk(response)) {
+          throw new Error('Failed to add new camera!')
+        }
+        else {
+          addSuccess.value = 'Success!'
+        }
+
       } catch (error) {
         console.log('Error: ', error)
-        addError.value = error.message
+        addError.value = error.response.data.message
       }
     }
 
@@ -707,6 +777,7 @@ export default {
     }
 
     return {
+      addSuccess,
       addError,
       cityWatcher,
       districtWatcher,
