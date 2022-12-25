@@ -236,7 +236,7 @@ export default {
     const from = ref(localDatetime);
     const to = ref(localDatetime);
 
-    const lastUpdated = ref(localDatetime);
+    const lastUpdated = ref('No data')
 
     async function getCameraInfo() {
       // Reset array
@@ -254,7 +254,7 @@ export default {
       ip.value = response.data.ip
 
       const current = new Date().getTime()
-      response.data.event.forEach((e) => {
+      response.data.event.forEach((e, i) => {
         if (current - new Date(e.timeStamp).getTime() < constants.__data_period__ * 1000) {
           labels.value.push(e.timeStamp)
           charts.value["Temperature"].push(e.temperature)
@@ -262,6 +262,10 @@ export default {
           charts.value["Rain"].push(e.rain)
           charts.value["Score"].push(e.score)
           charts.value["PPM"].push(e.ppm)
+        }
+
+        if(i === response.data.event.length - 1) {
+          lastUpdated.value = new Date(e.timeStamp).toLocaleString()
         }
       })
     }
@@ -306,13 +310,17 @@ export default {
 
       // console.log('Image: ', cameraImage.value)
 
-      response.data.event.forEach((e) => {
+      response.data.event.forEach((e, i) => {
         labels.value.push(e.timeStamp)
         charts.value["Temperature"].push(e.temperature)
         charts.value["Humidity"].push(e.humidity)
         charts.value["Rain"].push(e.rain)
         charts.value["Score"].push(e.score)
         charts.value["PPM"].push(e.ppm)
+
+        if(i === response.data.event.length - 1) {
+          lastUpdated.value = new Date(e.timeStamp).toLocaleString()
+        }
       })
     }
 
