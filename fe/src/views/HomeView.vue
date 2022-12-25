@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="flex flex-row w-full h-screen"
-  >
+  <div class="flex flex-row w-full h-screen">
     <!-- Map display -->
     <div class="w-full mt-20 mb-6 mx-6 rounded-lg bg-gray p-8" style="flex: 2">
       <div class="w-full">
@@ -10,20 +8,20 @@
           <div class="flex items-center">
 
             <!--  Random sampling data -->
-            <button class= "text-blue mr-8 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500" @click="createRandomSamples">
+            <button class="text-blue mr-8 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
+              @click="createRandomSamples">
               <font-awesome-icon icon="fa-solid fa-bolt" /> Random 1000 samples
-            </button> 
+            </button>
 
             <!-- Add camera -->
-            <button 
-              class="text-blue mr-8 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
-              data-bs-toggle="modal" 
-              data-bs-target="#exampleModal">
-              <font-awesome-icon icon="fa-solid fa-plus"/> Add cameras
+            <button class="text-blue mr-8 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
+              data-bs-toggle="modal" data-bs-target="#exampleModal">
+              <font-awesome-icon icon="fa-solid fa-plus" /> Add cameras
             </button>
 
             <!-- Modal -->
-            <div class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
+            <div
+              class="modal fade fixed top-0 left-0 hidden w-full h-full outline-none overflow-x-hidden overflow-y-auto"
               id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog relative w-auto pointer-events-none">
                 <div
@@ -40,39 +38,27 @@
                     <!-- IP -->
                     <label class="flex flex-col mt-4" for="username">
                       <span class="text-blue font-semibold text-xl ml-1">Camera IP</span>
-                      <input
-                        id="username"
-                        type="text"
+                      <input id="username" type="text"
                         class="border-light_blue border-2 shadow-lg placeholder-light_blue text-lg py-2 px-2 rounded-lg outline-none text-blue mt-1.5"
-                        v-model="camAdded.camIP"
-                        placeholder="Input cam IP address"
-                      />
+                        v-model="camAdded.camIP" placeholder="Input cam IP address" />
                     </label>
 
                     <!-- Latitude -->
                     <label class="flex flex-col mt-4" for="latitude">
                       <span class="text-blue font-semibold text-xl ml-1">Latitude</span>
-                      <input
-                        id="latitude"
-                        type="number"
+                      <input id="latitude" type="number"
                         class="border-light_blue border-2 shadow-lg placeholder-light_blue text-lg py-2 px-2 rounded-lg outline-none text-blue mt-1.5"
-                        v-model="camAdded.camLat"
-                        placeholder="Input cam latitude"
-                      />
+                        v-model="camAdded.camLat" placeholder="Input cam latitude" />
                     </label>
 
                     <!-- Camera longtitude -->
                     <label class="flex flex-col my-4" for="longitude">
                       <span class="text-blue font-semibold text-xl ml-1">Longtitude</span>
-                      <input
-                        id="longitude"
-                        type="number"
+                      <input id="longitude" type="number"
                         class="border-light_blue border-2 shadow-lg placeholder-light_blue text-lg py-2 px-2 rounded-lg outline-none text-blue mt-1.5"
-                        v-model="camAdded.camLng"
-                        placeholder="Input cam longtide"
-                      />
+                        v-model="camAdded.camLng" placeholder="Input cam longtide" />
                     </label>
-                  
+
                     <div class="row mt-4" v-if="addError">
                       <span class="text-blue text-base font-semibold ml-2"> {{ addError }} </span>
                     </div>
@@ -122,10 +108,9 @@
             </div>
 
 
-            <button 
-              class="text-blue mr-4 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
+            <button class="text-blue mr-4 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
               @click="onResetMap">
-              <font-awesome-icon icon="fa-solid fa-arrow-rotate-left"/> Refresh
+              <font-awesome-icon icon="fa-solid fa-arrow-rotate-left" /> Refresh
             </button>
 
           </div>
@@ -133,24 +118,17 @@
 
         <div class="map w-full mt-2">
           <!-- Show maps -->
-          <GMapMap 
-            class="w-full object-cover border-2 border-blue"
-            style="height: 360px" :center="mapCenter" :zoom="14">
+          <GMapMap class="w-full object-cover border-2 border-blue" style="height: 360px" :center="mapCenter"
+            :zoom="14">
 
-            <GMapMarker
-              v-for="marker, index in mapMarkers"
-              :icon="{
-                url: getMarkerColor(marker),
-                scaledSize: {
-                  width: 30,
-                  height: 30
-                }
-              }"
-              :position="{'lat': marker.position.lat, 'lng': marker.position.lng}"
-              :clickable="true"
-              :key="index"
-              @click="onMarkerClick($event, marker)"
-            />
+            <GMapMarker v-for="marker, index in mapMarkers" :icon="{
+              url: getMarkerColor(marker),
+              scaledSize: {
+                width: 30,
+                height: 30
+              }
+            }" :position="{ 'lat': marker.position.lat, 'lng': marker.position.lng }" :clickable="true" :key="index"
+              @click="onMarkerClick($event, marker)" />
 
           </GMapMap>
 
@@ -171,7 +149,7 @@
                 <font-awesome-icon class="text-base text-red-500 mr-2" icon="fa-solid fa-location-dot" />
                 <p class="font-normal text-blue text-base">More than {{ upperBound }}</p>
               </div>
-              
+
             </div>
           </div>
         </div>
@@ -185,9 +163,7 @@
 
             <!-- Number of markers -->
             <div class="flex flex-col justify-center items-center">
-              <h1
-                class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500"
-              >
+              <h1 class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500">
                 {{ mapMarkers.length }}
               </h1>
               <p class="font-normal text-base text-blue">Cameras</p>
@@ -311,34 +287,18 @@
             <label class="flex items-center" for="location">
               <!-- Title column -->
               <div style="flex: 1">
-                <span class="font-semibold text-blue text-normal"
-                  >District</span
-                >
+                <span class="font-semibold text-blue text-normal">District</span>
               </div>
               <div class="flex justify-between" style="flex: 4">
-                <select
-                  class="text-blue cursor-pointer outline-none font-normal w-32 py-2 rounded-lg mr-4"
-                  v-model="district"
-                  style="flex: 5"
-                >
-                  <option
-                    v-for="(dist, index) in districtList"
-                    :value="dist"
-                    :key="index"
-                  >
+                <select class="text-blue cursor-pointer outline-none font-normal w-32 py-2 rounded-lg mr-4"
+                  v-model="district" style="flex: 5">
+                  <option v-for="(dist, index) in districtList" :value="dist" :key="index">
                     {{ dist }}
                   </option>
                 </select>
-                <select
-                  class="text-blue cursor-pointer outline-none font-normal w-24 py-2 px-1 rounded-lg"
-                  v-model="city"
-                  style="flex: 5"
-                >
-                  <option
-                    v-for="(_city, index) in cityList"
-                    :value="_city"
-                    :key="index"
-                  >
+                <select class="text-blue cursor-pointer outline-none font-normal w-24 py-2 px-1 rounded-lg"
+                  v-model="city" style="flex: 5">
+                  <option v-for="(_city, index) in cityList" :value="_city" :key="index">
                     {{ _city }}
                   </option>
                 </select>
@@ -355,33 +315,20 @@
               </div>
               <div class="flex justify-between items-center" style="flex: 4">
                 <!-- Select date time -->
-                <p
-                  class="text-blue outline-none font-normal w-48 py-2 px-1 rounded-lg">
+                <p class="text-blue outline-none font-normal w-48 py-2 px-1 rounded-lg">
                   Display markers within
                 </p>
 
-                <font-awesome-icon
-                  class="text-blue font-normal text-sm"
-                  icon="fa-solid fa-plus-minus"
-                />
-                
+                <font-awesome-icon class="text-blue font-normal text-sm" icon="fa-solid fa-plus-minus" />
+
                 <!-- Input time -->
-                <input
-                  type="number"
+                <input type="number"
                   class="text-blue cursor-pointer text-center outline-none font-normal w-12 py-2 px-1 rounded-lg"
-                  v-model="timedelta"
-                />
+                  v-model="timedelta" />
 
                 <!-- Input time units -->
-                <select
-                  class="text-blue text-center outline-none font-normal w-20 py-2 rounded-lg"
-                  v-model="unit"
-                >
-                  <option
-                    v-for="(unit, index) in unitList"
-                    :value="unit"
-                    :key="index"
-                  >
+                <select class="text-blue text-center outline-none font-normal w-20 py-2 rounded-lg" v-model="unit">
+                  <option v-for="(unit, index) in unitList" :value="unit" :key="index">
                     {{ unit }}
                   </option>
                 </select>
@@ -397,21 +344,14 @@
                 <span class="font-semibold text-blue text-normal">Latitude</span>
               </div>
               <div class="flex items-center" style="flex: 4">
-                <p
-                  style="flex: 1"
-                  class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4"
-                >
+                <p style="flex: 1" class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4">
                   {{ round(mapCenter.lat, 6) }}
                 </p>
 
                 <!-- Longtitude column -->
-                <span style="flex: 1" class="font-semibold text-blue text-normal mr-8"
-                  >Longtitude</span
-                >
+                <span style="flex: 1" class="font-semibold text-blue text-normal mr-8">Longtitude</span>
 
-                <p
-                  style="flex: 1"
-                  class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4">
+                <p style="flex: 1" class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4">
                   {{ round(mapCenter.lng, 6) }}
                 </p>
               </div>
@@ -426,22 +366,14 @@
                 <span class="font-semibold text-blue text-normal">Lower</span>
               </div>
               <div class="flex items-center" style="flex: 4">
-                <input
-                  style="flex: 1"
-                  class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4"
-                  type="number"
-                  step="0.1"
-                  v-model="lowerBound"/>
+                <input style="flex: 1" class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4"
+                  type="number" step="0.1" v-model="lowerBound" />
 
                 <!-- Upper bound column -->
                 <span style="flex: 1" class="font-semibold text-blue text-normal mr-8">Upper</span>
 
-                <input
-                  style="flex: 1"
-                  class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4"
-                  type="number"
-                  step="0.1"
-                  v-model="upperBound" />
+                <input style="flex: 1" class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4"
+                  type="number" step="0.1" v-model="upperBound" />
               </div>
             </label>
           </div>
@@ -453,9 +385,7 @@
       <div class="row mt-2">
         <button
           class="transition ease-in-out duration-500 bg-blue text-gray font-semibold text-xl w-full p-1 rounded-lg border-blue border-2 hover:text-blue hover:bg-gray"
-          type="button"
-          @click="onApplyChange"
-        >
+          type="button" @click="onApplyChange">
           Apply changes
         </button>
       </div>
@@ -493,19 +423,16 @@
               </div>
             </label>
           </div> -->
-          
+
           <div v-if="currentMarker">
             <div class="row mt-2">
               <label class="flex items-center" for="location">
                 <!-- Title column -->
                 <div style="flex: 1">
-                  <span class="font-semibold text-blue text-normal"
-                    >Camera ID</span
-                  >
+                  <span class="font-semibold text-blue text-normal">Camera ID</span>
                 </div>
                 <div class="flex justify-between" style="flex: 4">
-                  <p
-                    class="text-blue cursor-pointer outline-none font-normal w-32 py-2 px-1 rounded-lg mr-4"
+                  <p class="text-blue cursor-pointer outline-none font-normal w-32 py-2 px-1 rounded-lg mr-4"
                     style="flex: 5">
                     {{ currentMarker.id }}
                   </p>
@@ -521,27 +448,20 @@
                   <span class="font-semibold text-blue text-normal">Latitude</span>
                 </div>
                 <div class="flex items-center" style="flex: 4">
-                  <p
-                    style="flex: 1"
-                    class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4"
-                  >
+                  <p style="flex: 1" class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4">
                     {{ round(currentMarker.position.lat, 6) }}
                   </p>
 
                   <!-- Longtitude column -->
-                  <span style="flex: 1" class="font-semibold text-blue text-normal mr-8"
-                    >Longtitude</span
-                  >
+                  <span style="flex: 1" class="font-semibold text-blue text-normal mr-8">Longtitude</span>
 
-                  <p
-                    style="flex: 1"
-                    class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4">
+                  <p style="flex: 1" class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4">
                     {{ round(currentMarker.position.lng, 6) }}
                   </p>
                 </div>
               </label>
             </div>
-            
+
             <!-- Temperature and humidity-->
             <div class="row mt-2">
               <label class="flex items-center" for="location">
@@ -550,21 +470,14 @@
                   <span class="font-semibold text-blue text-normal">Temper</span>
                 </div>
                 <div class="flex items-center" style="flex: 4">
-                  <p
-                    style="flex: 1"
-                    class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4"
-                  >
+                  <p style="flex: 1" class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4">
                     {{ round(currentMarker.temperature, 2) }} <span>&#176;</span>C
                   </p>
 
                   <!-- Longtitude column -->
-                  <span style="flex: 1" class="font-semibold text-blue text-normal mr-8"
-                    >Humi</span
-                  >
+                  <span style="flex: 1" class="font-semibold text-blue text-normal mr-8">Humi</span>
 
-                  <p 
-                    style="flex: 1"
-                    class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4">
+                  <p style="flex: 1" class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4">
                     {{ round(currentMarker.humidity, 2) }}%
                   </p>
                 </div>
@@ -580,21 +493,14 @@
                   <span class="font-semibold text-blue text-normal">Rain</span>
                 </div>
                 <div class="flex items-center" style="flex: 4">
-                  <p
-                    style="flex: 1"
-                    class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4"
-                  >
+                  <p style="flex: 1" class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4">
                     {{ round(currentMarker.rain, 2) }}
                   </p>
 
                   <!-- Air column -->
-                  <span style="flex: 1" class="font-semibold text-blue text-normal mr-8"
-                    >Air</span
-                  >
+                  <span style="flex: 1" class="font-semibold text-blue text-normal mr-8">Air</span>
 
-                  <p 
-                    style="flex: 1"
-                    class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4">
+                  <p style="flex: 1" class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4">
                     {{ round(currentMarker.ppm, 2) }}
                   </p>
                 </div>
@@ -605,9 +511,7 @@
             <div class="row mt-2">
               <button
                 class="transition ease-in-out duration-500 bg-blue text-gray font-semibold text-xl w-full p-1 rounded-lg border-blue border-2 hover:text-blue hover:bg-gray"
-                type="button"
-                @click="onShowDetail"
-              >
+                type="button" @click="onShowDetail">
                 Show detail
               </button>
             </div>
@@ -642,7 +546,7 @@ export default {
 
     // Location
     const districtList = ref([]);
-    const district = ref( null);
+    const district = ref(null);
     const cityList = ref([]);
     const city = ref(null);
     const locationData = ref(null)
@@ -652,20 +556,20 @@ export default {
       lat: 0,
       lng: 0
     })
-    
+
     // Get location list: Done
-    async function getAllCity(){
+    async function getAllCity() {
       const response = await instance.get('/city')
       locationData.value = response.data
 
       console.log('City data: ', locationData.value)
-    
+
       // Get city list
       locationData.value.forEach((city) => {
         cityList.value.push(city.name)
       })
 
-      if(cityList.value.length > 0) city.value = cityList.value[0]
+      if (cityList.value.length > 0) city.value = cityList.value[0]
     }
 
     // Setup watch effect on city
@@ -673,7 +577,7 @@ export default {
       if (city.value) {
         // Get district list
         locationData.value.forEach((c) => {
-          if(c.name === city.value) {
+          if (c.name === city.value) {
             //Reset district list
             districtList.value = []
 
@@ -685,7 +589,7 @@ export default {
         })
 
         // Init district
-        if(districtList.value.length > 0) district.value = districtList.value[0]
+        if (districtList.value.length > 0) district.value = districtList.value[0]
       }
     })
 
@@ -694,10 +598,10 @@ export default {
     const districtWatcher = watchEffect(() => {
       if (city.value && district.value) {
         locationData.value.forEach((c) => {
-          if (c.name === city.value){
+          if (c.name === city.value) {
             // Update district list
             c.districts.forEach((d => {
-              if(d.name === district.value){
+              if (d.name === district.value) {
                 mapCenter.value = {
                   lat: Number(d.lat),
                   lng: Number(d.lng)
@@ -730,8 +634,8 @@ export default {
       {
         "id": 1,
         "position": {
-          "lat": 0, 
-          "lng": 0  
+          "lat": 0,
+          "lng": 0
         },
         "score": 0,
         "temperature": 0,
@@ -772,7 +676,7 @@ export default {
 
     // HARD CODE HERE
     // Seperate marker to 3 colors
-    function getMarkerColor(marker){
+    function getMarkerColor(marker) {
       if (marker.score >= upperBound.value) {
         return require('@/assets/images/red.png')
       }
@@ -828,7 +732,7 @@ export default {
         }
       })
     }
-    
+
     // Add camera: Doing
     const addError = ref(null)
     const addSuccess = ref(null)
@@ -867,7 +771,7 @@ export default {
     }
 
     // Random samples: Done
-    function createRandomSamples(){
+    function createRandomSamples() {
       console.log('Event: Create 1000 random cameras')
       mapMarkers.value = randomSamples()
     }

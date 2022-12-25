@@ -1,97 +1,115 @@
 <template>
+  <!-- Body -->
   <div class="flex flex-row w-full h-screen">
     <!-- Chart display -->
     <div class="w-full mt-20 mb-6 mx-6 rounded-lg bg-gray p-8" style="flex: 2">
+
+      <!-- Chart -->
       <div class="w-full">
         <div class="w-full flex justify-between items-center">
-          <h1 class="font-bold text-lg text-blue">Statistics</h1>
+          <h1 class="font-bold text-xl text-blue">Statistics</h1>
           <div class="flex">
-            <font-awesome-icon
-              class="text-blue mr-4 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
-              icon="fa-solid fa-arrow-rotate-left"
-            />
-            <font-awesome-icon
-              class="text-blue mr-4 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
-              icon="fa-solid fa-arrow-right"
-            />
+            <button>
+              <font-awesome-icon @click="refresh"
+                class="text-blue mr-4 cursor-pointer hover:text-dark_blue transition ease-in-out duration-500"
+                icon="fa-solid fa-arrow-rotate-left" />
+            </button>
+
+            <!-- <button v-for="chart in Object.keys(charts)" :key="chart"
+              class="mx-2 text-blue hover:text-dark_blue transition ease-in-out duration-500" @click="() => {
+                currentChart = chart;
+              }">
+              {{ chart }}
+            </button> -->
           </div>
         </div>
 
-        <div class="map w-full mt-2">
-          <img
-            class="w-full object-fit border-2 border-blue"
-            style="height: 360px"
-            :src="require('@/assets/images/linechart.png')"
-            alt="Google map"
-          />
-          <div class="w-full mt-6 flex items-center justify-center">
-            <h1 class="font-bold text-blue text-2xl">Temperature line chart</h1>
+        <div class="w-full flex flex-col items-center" style="height: 500px">
+          <div class="map w-full flex flex-col mt-2 flex items-center" style="flex: 1">
+            <div class="w-full object-fit" style="flex: 1">
+              <Line :data="chartData" :options="chartOptions" />
+            </div>
+            <div class="w-full my-3 flex items-center justify-center">
+              <h1 class="font-bold text-blue text-xl">Traffic density</h1>
+            </div>
           </div>
+
+          <div class="flex flex-row items-center justify-between w-full" style="flex: 1">
+            <div class="w-full mr-6" style="flex: 1">
+              <div class="w-full object-fit">
+                <Line :data="temphumi" :options="subOptions" />
+              </div>
+              <div class="w-full my-4 flex items-center justify-center">
+                <h1 class="font-bold text-blue text-xl">Temperature and Humidity</h1>
+              </div>
+            </div>
+
+            <div class="w-full" style="flex: 1">
+              <div class="w-full object-fit">
+                <Line :data="rainppm" :options="subOptions" />
+              </div>
+              <div class="w-full my-4 flex items-center justify-center">
+                <h1 class="font-bold text-blue text-xl">Rain and Air quality</h1>
+              </div>
+            </div>
+          </div>
+
         </div>
+
+
       </div>
 
       <!-- Config display -->
-      <div class="w-full mt-6">
+      <div class="w-full mt-0">
         <div class="flex justify-between items-center pt-4">
-          <div class="flex items-center justify-center">
+          <!-- <div class="flex items-center justify-center">
             <p class="font-semibold text-lg text-blue mr-4">Average</p>
-            <span
-              class="bg-white px-6 py-1 rounded-lg text-blue font-normal text-lg"
-              >{{ average }}</span
-            >
-          </div>
+            <span class="bg-white px-6 py-1 rounded-lg text-blue font-normal text-lg">{{ average }}</span>
+          </div> -->
 
           <div class="flex items-center justify-center">
             <p class="font-semibold text-lg text-blue mx-4">From</p>
-            <input
-              type="datetime-local"
-              class="text-blue outline-none text-lg font-normal w-72 py-1 px-6 rounded-lg"
-              v-model="from"
-            />
+            <input type="datetime-local" class="text-blue outline-none text-lg font-normal w-72 py-1 px-6 rounded-lg"
+              v-model="from" />
             <p class="font-semibold text-lg text-blue mx-4">to</p>
-            <input
-              type="datetime-local"
-              class="text-blue outline-none text-lg font-normal w-72 py-1 px-6 rounded-lg"
-              v-model="to"
-            />
+            <input type="datetime-local" class="text-blue outline-none text-lg font-normal w-72 py-1 px-6 rounded-lg"
+              v-model="to" />
+            <button class="ml-10 font-semibold text-lg text-gray w-40 px-6 py-2 bg-blue text-white rounded cursor-pointer hover:bg-dark_blue" @click="filterCameraInfo">
+              Get data
+            </button>
           </div>
-        </div>
 
+        </div>
         <div class="map"></div>
       </div>
+
     </div>
-    <div class="w-full mt-20 mb-6 mr-6 rounded-lg bg-gray p-8" style="flex: 1">
+
+    <!-- Camera display -->
+    <div class="w-full mt-20 mb-6 mr-6 rounded-lg bg-gray p-5" style="flex: 1">
       <!-- Camera image -->
       <div class="w-full">
         <div class="w-full flex flex-col justify-start">
-          <h1 class="font-bold text-lg text-blue">Camera image</h1>
-          <img
-            class="w-full object-cover border-2 border-blue"
-            style="height: 300px"
-            :src="require('@/assets/images/traffic.jpg')"
-            alt="Traffic image"
-          />
+          <h1 class="font-bold text-xl text-blue">Camera image</h1>
+          <img class="w-full object-cover border-2 border-blue mt-2" style="height: 300px" v-bind:src="img"
+            alt="Traffic image" />
         </div>
       </div>
 
       <!-- Camera info -->
-      <div class="w-full mt-8">
+      <div class="w-full mt-5">
         <div class="w-full flex flex-col justify-start">
-          <h1 class="font-bold text-lg text-blue">Camera infomation</h1>
+          <h1 class="font-bold text-xl text-blue">Camera infomation</h1>
 
           <!-- Cam ids -->
           <div class="row mt-4">
             <label class="flex items-center" for="location">
               <!-- Radius column -->
               <div style="flex: 1">
-                <span class="text-lg font-semibold text-blue text-normal mr-4"
-                  >Cam ID</span
-                >
+                <span class="text-lg font-semibold text-blue text-normal mr-4">Cam ID</span>
               </div>
-              <div class="flex items-center justify-between" style="flex: 4">
-                <p
-                  class="w-full bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg"
-                >
+              <div class="flex items-center justify-between" style="flex: 3">
+                <p class="w-full bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg">
                   {{ camid }}
                 </p>
               </div>
@@ -103,26 +121,17 @@
             <label class="flex items-center" for="location">
               <!-- Radius column -->
               <div style="flex: 1">
-                <span class="text-lg font-semibold text-blue text-normal mr-4"
-                  >Longtitude</span
-                >
+                <span class="text-lg font-semibold text-blue text-normal mr-4">Latitude</span>
               </div>
-              <div class="flex items-center justify-between" style="flex: 4">
-                <p
-                  class="bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg"
-                >
-                  {{ longtitude }}
+              <div class="flex items-center justify-between" style="flex: 3">
+                <p class="bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg" style="flex: 1">
+                  {{ latitude }}
                 </p>
 
                 <!-- Meters -->
-                <span class="text-lg font-semibold text-blue text-normal mr-4"
-                  >Latitude</span
-                >
-
-                <p
-                  class="bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg"
-                >
-                  {{ latitude }}
+                <span class="text-lg font-semibold text-blue text-normal mx-4" style="flex: 1">Longtitude</span>
+                <p class="bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg" style="flex: 1">
+                  {{ longtitude }}
                 </p>
               </div>
             </label>
@@ -133,32 +142,63 @@
             <label class="flex items-center" for="location">
               <!-- Radius column -->
               <div style="flex: 1">
-                <span class="text-lg font-semibold text-blue text-normal mr-4"
-                  >Updated</span
-                >
+                <span class="text-lg font-semibold text-blue text-normal mr-4">Updated</span>
               </div>
-              <div class="flex items-center justify-between" style="flex: 4">
-                <p
-                  class="w-full bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg"
-                >
+              <div class="flex items-center justify-between" style="flex: 3">
+                <p class="w-full bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg">
                   {{ lastUpdated }}
                 </p>
               </div>
             </label>
           </div>
+
+          <div class="row w-full flex justfy-center items-center bg-red">
+            <button class="mt-4 w-full bg-red-500 px-10 py-2 rounded font-semibold text-lg text-gray hover:bg-red-800" @click="alert">Alert !</button>
+          </div>
+
         </div>
       </div>
+      
+      
     </div>
   </div>
 </template>
 
 <script>
-import { ref } from "vue";
-// import constants from "@/constants";
+import { ref, computed } from "vue";
+import { Line } from 'vue-chartjs'
+import { Chart as ChartJS, Title, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, ChartData } from 'chart.js'
+
+ChartJS.register(Title, Tooltip, Legend, PointElement, LineElement, CategoryScale, LinearScale)
+
+import instance from "@/utils/axios";
+import { useRoute } from "vue-router";
+import { isOk } from "@/utils/response";
+// import { resolveNaptr } from "dns";
+import constants from "@/constants";
 
 export default {
+  components: { Line },
   setup() {
     const average = ref(0.0);
+    const route = useRoute()
+
+    // Camera info
+    const longtitude = ref(null);
+    const latitude = ref(null);
+    const img = ref(null)
+    const camid = ref(route.params.id);
+    const ip = ref(null)
+
+    const labels = ref([])
+    const currentChart = ref('Temperature')
+    const charts = ref({
+      'Score': [],
+      'Temperature': [],
+      'Humidity': [],
+      'Rain': [],
+      'PPM': []
+    })
 
     // Get current time
     // Time
@@ -183,16 +223,172 @@ export default {
     const from = ref(localDatetime);
     const to = ref(localDatetime);
 
-    // Camera info
-    const camid = ref("askdnashdoasj89a09u0");
-    const longtitude = ref(128.131);
-    const latitude = ref(90.123);
-
     const lastUpdated = ref(localDatetime);
 
-    console.log(localDatetime);
+    async function getCameraInfo() {
+      // Reset array
+      labels.value = []
+      charts.value["Temperature"] = []
+      charts.value["Humidity"] = []
+      charts.value["Rain"] = []
+      charts.value["Score"] = []
+      charts.value["PPM"] = []
+
+      const response = await instance.get('/cameras/' + route.params.id)
+      img.value = response.data.image
+      longtitude.value = response.data.lng
+      latitude.value = response.data.lat
+      ip.value = response.data.ip
+      
+      const current = new Date().getTime()
+      response.data.event.forEach((e) => {
+        if (current - new Date(e.timeStamp).getTime() < constants.__data_period__ * 1000){
+          labels.value.push(e.timeStamp)
+          charts.value["Temperature"].push(e.temperature)
+          charts.value["Humidity"].push(e.humidity)
+          charts.value["Rain"].push(e.rain)
+          charts.value["Score"].push(e.score)
+          charts.value["PPM"].push(e.ppm)
+        }
+      })
+      // console.log(response.data)
+      // console.log('ok')
+      // console.log(typeof currentChart.value)
+    }
+
+    async function alert() {
+      const response = await instance.post('/sensors')
+      if (!isOk(response)) { console.log('ok') }
+
+    }
+
+    async function filterCameraInfo() {
+      const response = await instance.get('/cameras/ip/' + ip.value + '/' + from.value + '/' + to.value)
+      console.log(response.data)
+      labels.value = []
+      charts.value["Temperature"] = []
+      charts.value["Humidity"] = []
+      charts.value["Rain"] = []
+      charts.value["Score"] = []
+      charts.value["PPM"] = []
+
+      response.data.event.forEach((e) => {
+        labels.value.push(e.timeStamp)
+        charts.value["Temperature"].push(e.temperature)
+        charts.value["Humidity"].push(e.humidity)
+        charts.value["Rain"].push(e.rain)
+        charts.value["Score"].push(e.score)
+        charts.value["PPM"].push(e.ppm)
+      })
+    }
+
+    getCameraInfo()
+
+    async function refresh(){
+      console.log('Event: Reset!')
+      getCameraInfo()
+    }
+
+    const chartData = computed(() => {
+      return {
+        labels: Object.values(labels.value),
+        datasets: [
+          {
+            backgroundColor: 'blue',
+            borderColor: 'lightblue',
+            pointBorderColor: 'blue',
+            pointBorderWidth: 2,
+            data: Object.values(charts.value.Score),
+          },
+        ]
+      }
+    })
+
+    const chartOptions = computed(() => {
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            ticks: {
+              display: false,
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false,
+          }
+        }
+      }
+    })
+
+    const subOptions = computed(() => {
+      return {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            ticks: {
+              display: false,
+            }
+          }
+        },
+      }
+    })
+
+    const temphumi = computed(() => {
+      return {
+        labels: Object.values(labels.value),
+        datasets: [
+          {
+            label: 'Temp',
+            backgroundColor: '#ff0000',
+            borderColor: '#fa9191',
+            pointBorderColor: '#ff0000',
+            pointBorderWidth: 0.1,
+            data: Object.values(charts.value.Temperature),
+          },
+          {
+            label: 'Humi',
+            backgroundColor: 'green',
+            borderColor: 'lightgreen',
+            pointBorderColor: 'green',
+            pointBorderWidth: 0.1,
+            data: Object.values(charts.value.Humidity),
+          },
+        ]
+      }
+    })
+
+    const rainppm = computed(() => {
+      return {
+        labels: Object.values(labels.value),
+        datasets: [
+          {
+            label: 'Rain',
+            backgroundColor: '#f77002',
+            borderColor: '#f7bcbc',
+            pointBorderColor: '#f77002',
+            pointBorderWidth: 0.1,
+            data: Object.values(charts.value.Rain),
+          },
+          {
+            label: 'PPM',
+            backgroundColor: '#f702d6',
+            borderColor: '#ff9ef2',
+            pointBorderColor: '#f702d6',
+            pointBorderWidth: 0.1,
+            data: Object.values(charts.value.PPM),
+          },
+        ]
+      }
+    })
+
+    // setInterval(refresh, constants.__refresh_time__ * 1000)
 
     return {
+      refresh,
       average,
       from,
       to,
@@ -200,6 +396,16 @@ export default {
       longtitude,
       latitude,
       lastUpdated,
+      img,
+      chartData,
+      chartOptions,
+      currentChart,
+      charts,
+      temphumi,
+      rainppm,
+      subOptions,
+      alert,
+      filterCameraInfo
     };
   },
 };

@@ -15,5 +15,8 @@ module.exports = {
     "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     // "prettier/prettier": ["error", { endOfLine: "auto" }],
+    // "prettier/prettier": 0,
+    'vue/multi-word-component-names': 'off',
+    "vue/no-unused-components": "off"
   },
 };
