@@ -4,7 +4,36 @@
     <div class="w-full mt-20 mb-6 mx-6 rounded-lg bg-gray p-8" style="flex: 2">
       <div class="w-full">
         <div class="w-full flex justify-between items-center">
-          <h1 class="font-bold text-lg text-blue">Traffic Density Map</h1>
+
+          <div class="title flex flex-row justify-between items-center">
+
+            <!--  Traffic density -->
+            <div class="text-blue flex flex-row justify-between items-center">
+              <font-awesome-icon class="cursor-pointer text-xl mx-4 hover:text-dark_blue" @click="mapState = 'traffic'" v-if="mapState !== 'traffic'" icon="fa-solid fa-traffic-light" />
+              <h1 v-else class="mx-2 font-bold text-lg">Traffic Density Map</h1>
+            </div>
+
+            <!-- Temperature -->
+            <div class="text-blue flex flex-row justify-between items-center">
+              <font-awesome-icon class="cursor-pointer text-xl mx-4 hover:text-dark_blue " @click="mapState = 'temperature'" v-if="mapState !== 'temperature'" icon="fa-solid fa-temperature-three-quarters" />
+              <h1 v-else class="mx-2 font-bold text-lg">Temperature Map</h1>
+            </div>
+
+            <!-- Rain -->
+            <div class="text-blue flex flex-row justify-between items-center">
+              <font-awesome-icon class="cursor-pointer text-xl mx-4 hover:text-dark_blue " @click="mapState = 'rain'" v-if="mapState !== 'rain'" icon="fa-solid fa-cloud-rain" />
+              <h1 v-else class="mx-2 font-bold text-lg">Rain Map</h1>
+            </div>
+
+            <!-- Air quality -->
+            <div class="text-blue flex flex-row justify-between items-center">
+              <font-awesome-icon class="cursor-pointer text-xl mx-4 hover:text-dark_blue " @click="mapState = 'air'" v-if="mapState !== 'air'" icon="fa-solid fa-wind" />
+              <h1 v-else class="mx-2 font-bold text-lg">Air Quality Map</h1>
+            </div>
+
+          </div>          
+          
+
           <div class="flex items-center">
 
             <!--  Random sampling data -->
@@ -126,15 +155,39 @@
               scaledSize: {
                 width: 30,
                 height: 30
-              }
+              },
+              labelOrigin: {x: 16, y: 40},
+              strokeColor: 'white',
+              strokeWeight: 1,
             }" :position="{ 'lat': marker.position.lat, 'lng': marker.position.lng }" :clickable="true" :key="index"
-              @click="onMarkerClick($event, marker)" />
+              @click="onMarkerClick($event, marker)" 
+            />
+
+            <GMapMarker v-for="marker, index in errorMarkers" :icon="{
+              url: getErrorMarkersImage(),
+              scaledSize: {
+                width: 30,
+                height: 30
+              },
+              labelOrigin: {x: 16, y: 40},
+              strokeColor: 'white',
+              strokeWeight: 1,
+            }" :position="{ 'lat': marker.position.lat, 'lng': marker.position.lng }" :clickable="true" :key="index"
+              @click="onMarkerClick($event, marker)" 
+            />
+
+              <!-- :label="{
+                text: 'Home',
+                color: 'white'
+              }" -->
 
           </GMapMap>
 
           <!-- Show note -->
           <div class="w-full mt-2 flex items-center justify-end">
-            <div class="flex justify-center items-center">
+            
+            <!-- Note traffic -->
+            <div v-if="mapState === 'traffic'" class="flex justify-center items-center">
               <div class="flex items-center mr-6">
                 <font-awesome-icon class="text-normal text-green-500 mr-2" icon="fa-solid fa-location-dot" />
                 <p class="font-normal text-blue text-base">Less than {{ lowerBound }}</p>
@@ -150,7 +203,57 @@
                 <p class="font-normal text-blue text-base">More than {{ upperBound }}</p>
               </div>
 
+              <div class="flex items-center mr-6">
+                <font-awesome-icon class="text-base text-[#999] mr-2" icon="fa-solid fa-location-dot" />
+                <p class="font-normal text-blue text-base">Inactive in 1 day</p>
+              </div>
             </div>
+
+            <!-- Note temperature -->
+            <div v-if="mapState === 'temperature'" class="flex justify-center items-center">
+              
+              <div class="flex items-center mr-6">
+                <font-awesome-icon class="text-base text-red-500 mr-2" icon="fa-solid fa-temperature-three-quarters" />
+                <p class="font-normal text-blue text-base">Hotter than {{ temperatureThreshold }} <span>&#176;</span>C</p>
+              </div>
+
+              <div class="flex items-center mr-6">
+                <font-awesome-icon class="text-normal text-light_blue mr-2" icon="fa-solid fa-temperature-three-quarters" />
+                <p class="font-normal text-blue text-base">Colder than {{ temperatureThreshold }} <span>&#176;</span>C</p>
+              </div>
+
+              <div class="flex items-center mr-6">
+                <font-awesome-icon class="text-base text-[#999] mr-2" icon="fa-solid fa-temperature-three-quarters" />
+                <p class="font-normal text-blue text-base">Inactive in 1 day</p>
+              </div>
+            </div>
+
+            <!-- Note rain -->
+            <div v-if="mapState === 'air'" class="flex justify-center items-center">
+              <div class="flex items-center mr-6">
+                <font-awesome-icon class="text-normal text-red-500 mr-2" icon="fa-solid fa-circle-exclamation" />
+                <p class="font-normal text-blue text-base">Danger </p>
+              </div>
+
+              <div class="flex items-center mr-6">
+                <font-awesome-icon class="text-base text-[#999] mr-2" icon="fa-solid fa-circle-exclamation" />
+                <p class="font-normal text-blue text-base">Inactive in 1 day</p>
+              </div>
+            </div>
+
+            <!-- Note rain -->
+            <div v-if="mapState === 'rain'" class="flex justify-center items-center">
+              <div class="flex items-center mr-6">
+                <font-awesome-icon class="text-normal text-blue mr-2" icon="fa-solid fa-cloud-rain" />
+                <p class="font-normal text-blue text-base">Rainning </p>
+              </div>
+
+              <div class="flex items-center mr-6">
+                <font-awesome-icon class="text-base text-[#999] mr-2" icon="fa-solid fa-cloud-rain" />
+                <p class="font-normal text-blue text-base">Inactive in 1 day</p>
+              </div>
+            </div>
+          
           </div>
         </div>
       </div>
@@ -161,12 +264,20 @@
           <h1 class="font-bold text-lg text-blue">Analytics</h1>
           <div class="flex justify-between items-center pt-4">
 
-            <!-- Number of markers -->
+            <!-- Number of active markers -->
             <div class="flex flex-col justify-center items-center">
               <h1 class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500">
                 {{ mapMarkers.length }}
               </h1>
-              <p class="font-normal text-base text-blue">Cameras</p>
+              <p class="font-normal text-base text-blue">Active cameras</p>
+            </div>
+
+            <!-- Number of active markers -->
+            <div class="flex flex-col justify-center items-center">
+              <h1 class="font-bold text-3xl text-blue hover:text-dark_blue transition ease-in-out duration-500">
+                {{ errorMarkers.length }}
+              </h1>
+              <p class="font-normal text-base text-blue">Inactive cameras</p>
             </div>
 
             <!-- Average score -->
@@ -359,7 +470,7 @@
           </div>
 
           <!-- Set range -->
-          <div class="row mt-2">
+          <div v-if="mapState === 'traffic'" class="row mt-2">
             <label class="flex items-center" for="location">
               <!-- Lower bound column -->
               <div style="flex: 1">
@@ -375,6 +486,48 @@
                 <input style="flex: 1" class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4"
                   type="number" step="0.1" v-model="upperBound" />
               </div>
+            </label>
+          </div>
+
+          <div v-if="mapState === 'temperature'" class="row mt-2">
+            <label class="flex items-center" for="location">
+              <!-- Lower bound column -->
+              <div style="flex: 1">
+                <span class="font-semibold text-blue text-normal">Threshold</span>
+              </div>
+              <div class="flex items-center" style="flex: 4">
+                <input style="flex: 1" class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4"
+                  type="number" step="0.1" v-model="temperatureThreshold" />
+                <p class="text-blue font-normal"><span>&#176;</span>C</p>
+              </div>
+            </label>
+          </div>
+
+          <div v-if="mapState === 'rain'" class="row mt-2">
+            <label class="flex items-center" for="location">
+              <!-- Lower bound column -->
+              <div style="flex: 1">
+                <span class="font-semibold text-blue text-normal">Threshold</span>
+              </div>
+              <div class="flex items-center" style="flex: 4">
+                <input style="flex: 1" class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4"
+                  type="number" step="0.1" v-model="rainThreshold" />
+                  <p class="text-blue font-normal"></p>
+              </div>
+            </label>
+          </div>
+
+          <div v-if="mapState === 'air'" class="row mt-2">
+            <label class="flex items-center" for="location">
+              <!-- Lower bound column -->
+              <div style="flex: 1">
+                <span class="font-semibold text-blue text-normal">Threshold</span>
+              </div>
+              <div class="flex items-center" style="flex: 4">
+                <input style="flex: 1" class="text-blue w-full outline-none font-normal py-2 px-1 rounded-lg mr-4"
+                  type="number" step="0.1" v-model="airThrehold" />
+              </div>
+              <p class="text-blue font-normal">ppm</p>
             </label>
           </div>
 
@@ -542,6 +695,13 @@ import { isOk } from "@/utils/response";
 
 export default {
   setup() {
+    const mapState = ref(constants.__default_map__)
+
+    // Threshold
+    const temperatureThreshold = ref(constants.__default_temp_threshold__)
+    const rainThreshold = ref(constants.__default_rain_threshold__)
+    const airThrehold = ref(constants.__default_air_threshold__)
+
     const router = useRouter()
 
     // Location
@@ -627,23 +787,41 @@ export default {
     const timedelta = ref(constants.__default_time_delta__);
 
     // List of markers
-    const mapMarkers = ref(null)
+    const mapMarkers = ref([])
 
     // Get data from server
-    mapMarkers.value = [
-      {
-        "id": 1,
-        "position": {
-          "lat": 0,
-          "lng": 0
-        },
-        "score": 0,
-        "temperature": 0,
-        "humidity": 0,
-        "rain": 0,
-        "ppm": 0
-      }
-    ]
+    // mapMarkers.value = [
+    //   {
+    //     "id": 1,
+    //     "position": {
+    //       "lat": 0,
+    //       "lng": 0
+    //     },
+    //     "score": 0,
+    //     "temperature": 0,
+    //     "humidity": 0,
+    //     "rain": 0,
+    //     "ppm": 0
+    //   }
+    // ]
+
+    // Error data
+    const errorMarkers = ref([])
+
+    // errorMarkers.value = [
+    //   {
+    //     "id": 2,
+    //     "position": {
+    //       "lat": 20,
+    //       "lng": 20
+    //     },
+    //     "score": 0,
+    //     "temperature": 0,
+    //     "humidity": 0,
+    //     "rain": 0,
+    //     "ppm": 0
+    //   }
+    // ]
 
     // Counting average
     const averageStats = computed(() => {
@@ -671,20 +849,68 @@ export default {
     })
 
     // Lower and upper bound
-    const lowerBound = ref(3.0)
-    const upperBound = ref(4.0)
+    const lowerBound = ref(constants.__default_traffic_lower__)
+    const upperBound = ref(constants.__default_traffic_higher__)
 
     // HARD CODE HERE
     // Seperate marker to 3 colors
     function getMarkerColor(marker) {
-      if (marker.score >= upperBound.value) {
-        return require('@/assets/images/red.png')
+      if (mapState.value === 'traffic'){
+        if (marker.score >= upperBound.value) {
+          return require('@/assets/images/red.png')
+        }
+        if (marker.score >= lowerBound.value) {
+          return require('@/assets/images/yellow.png')
+        }
+        if (marker.score < lowerBound.value) {
+          return require('@/assets/images/green.png')
+        }
       }
-      if (marker.score >= lowerBound.value) {
-        return require('@/assets/images/yellow.png')
+
+      else if (mapState.value === 'temperature') {
+        if (marker.temperature >= temperatureThreshold.value){
+          return require('@/assets/images/hot.png')
+        }
+        else{
+          return require('@/assets/images/cold.png')
+        }
       }
-      if (marker.score < lowerBound.value) {
-        return require('@/assets/images/green.png')
+
+      else if (mapState.value === 'rain') {
+        if (marker.rain <= rainThreshold.value) {
+          return require('@/assets/images/rain.png')
+        }
+        else{
+          return require('@/assets/images/empty.png')
+        }
+      }
+
+      else if (mapState.value === 'air') {
+        console.log('Air')
+        if (marker.ppm >= airThrehold.value) {
+          return require('@/assets/images/warning.png')
+        }
+        else{
+          return require('@/assets/images/empty.png')
+        }
+      }
+    }
+
+    function getErrorMarkersImage(){
+      if (mapState.value === 'traffic'){
+        return require('@/assets/images/inactive_pin.png')
+      }
+
+      else if (mapState.value === 'temperature') {
+        return require('@/assets/images/inactive_temp.png')
+      }
+
+      else if (mapState.value === 'rain') {
+        return require('@/assets/images/inactive_rain.png')
+      }
+
+      else if (mapState.value === 'air') {
+        return require('@/assets/images/inactive_warning.png')
       }
     }
 
@@ -707,7 +933,7 @@ export default {
     async function onApplyChange() {
       console.log('Event: Appply changes!')
 
-      // Request to server to get data
+      // Request to server to get data valid data
       const timeRange = getTimeRange(timedelta.value, unit.value)
 
       const url = formatUrl('/cameras/events', timeRange)
@@ -718,6 +944,14 @@ export default {
       // Update to mapMarkers
       mapMarkers.value = events
       console.log('Markers: ', mapMarkers.value)
+
+      // Request to server to geterror data
+      const errorResponse = await instance.get('/cameras/all/error')
+      const errorEvents = formatMarkers(errorResponse.data)
+
+      // Update markers
+      errorMarkers.value = errorEvents
+      console.log('Error markers: ', errorMarkers.value)
     }
 
     // Next to page detail: Done
@@ -773,10 +1007,17 @@ export default {
     // Random samples: Done
     function createRandomSamples() {
       console.log('Event: Create 1000 random cameras')
-      mapMarkers.value = randomSamples()
+      mapMarkers.value = randomSamples(900)
+      errorMarkers.value = randomSamples(100)
     }
 
     return {
+      getErrorMarkersImage,
+      errorMarkers,
+      temperatureThreshold,
+      airThrehold,
+      rainThreshold,
+      mapState,
       addSuccess,
       addError,
       cityWatcher,

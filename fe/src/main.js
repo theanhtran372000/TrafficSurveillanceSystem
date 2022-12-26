@@ -20,7 +20,12 @@ import {
   faPlusMinus,
   faRightFromBracket,
   faLocationDot,
-  faBolt
+  faBolt,
+  faCloudRain,
+  faTemperatureThreeQuarters,
+  faWind,
+  faTrafficLight,
+  faCircleExclamation
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add([
@@ -32,7 +37,12 @@ library.add([
   faPlusMinus,
   faRightFromBracket,
   faLocationDot,
-  faBolt
+  faBolt,
+  faCloudRain,
+  faTemperatureThreeQuarters,
+  faWind,
+  faTrafficLight,
+  faCircleExclamation
 ]);
 
 import VueGoogleMaps from '@fawmi/vue-google-maps'
