@@ -790,38 +790,38 @@ export default {
     const mapMarkers = ref([])
 
     // Get data from server
-    mapMarkers.value = [
-      {
-        "id": 1,
-        "position": {
-          "lat": 0,
-          "lng": 0
-        },
-        "score": 0,
-        "temperature": 0,
-        "humidity": 0,
-        "rain": 0,
-        "ppm": 0
-      }
-    ]
+    // mapMarkers.value = [
+    //   {
+    //     "id": 1,
+    //     "position": {
+    //       "lat": 0,
+    //       "lng": 0
+    //     },
+    //     "score": 0,
+    //     "temperature": 0,
+    //     "humidity": 0,
+    //     "rain": 0,
+    //     "ppm": 0
+    //   }
+    // ]
 
     // Error data
     const errorMarkers = ref([])
 
-    errorMarkers.value = [
-      {
-        "id": 2,
-        "position": {
-          "lat": 20,
-          "lng": 20
-        },
-        "score": 0,
-        "temperature": 0,
-        "humidity": 0,
-        "rain": 0,
-        "ppm": 0
-      }
-    ]
+    // errorMarkers.value = [
+    //   {
+    //     "id": 2,
+    //     "position": {
+    //       "lat": 20,
+    //       "lng": 20
+    //     },
+    //     "score": 0,
+    //     "temperature": 0,
+    //     "humidity": 0,
+    //     "rain": 0,
+    //     "ppm": 0
+    //   }
+    // ]
 
     // Counting average
     const averageStats = computed(() => {
