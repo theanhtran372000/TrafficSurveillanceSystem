@@ -23,5 +23,5 @@ export default {
     HOUR: "hours"
   },
   __data_period__: 5 * 60, // seconds
-  __refresh_time__: 5, // seconds
+  __refresh_time__: 2, // seconds
 };
