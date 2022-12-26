@@ -134,13 +134,13 @@
               </div>
               <div class="flex items-center justify-between" style="flex: 3">
                 <p class="bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg" style="flex: 1">
-                  {{ latitude }}
+                  {{ round(latitude, 6) }}
                 </p>
 
                 <!-- Meters -->
                 <span class="text-lg font-semibold text-blue text-normal mx-4" style="flex: 1">Longtitude</span>
                 <p class="bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg" style="flex: 1">
-                  {{ longtitude }}
+                  {{ round(longtitude, 6) }}
                 </p>
               </div>
             </label>
@@ -186,6 +186,7 @@ import { useRoute } from "vue-router";
 import { isOk } from "@/utils/response";
 // import { resolveNaptr } from "dns";
 import constants from "@/constants";
+import { round } from "@/utils/number";
 
 export default {
   components: { Line },
@@ -197,8 +198,8 @@ export default {
     const isRefresh = ref(true);
 
     // Camera info
-    const longtitude = ref(null);
-    const latitude = ref(null);
+    const longtitude = ref(0);
+    const latitude = ref(0);
     const cameraImage = ref(null)
     const camid = ref(route.params.id);
     const ip = ref(null)
@@ -439,6 +440,7 @@ export default {
     setInterval(refresh, constants.__refresh_time__ * 1000 * 2)
 
     return {
+      round,
       isRefresh,
       refresh,
       average,
