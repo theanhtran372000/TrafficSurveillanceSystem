@@ -24,4 +24,10 @@ export default {
   },
   __data_period__: 5 * 60, // seconds
   __refresh_time__: 2, // seconds
+  __default_map__: 'traffic',
+  __default_traffic_lower__: 3.0,
+  __default_traffic_higher__: 4.0,
+  __default_temp_threshold__: 25,
+  __default_rain_threshold__: 400,
+  __default_air_threshold__: 1000
 };
