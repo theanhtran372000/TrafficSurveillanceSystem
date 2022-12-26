@@ -5,7 +5,7 @@ export function formatMarkers(receivedMarkers) {
       "id": marker.id,
       "position": {
         "lat": marker.lat, 
-        "lng": marker.lon  
+        "lng": marker.lng  
       },
       "score": marker.event.score,
       "temperature": marker.event.temperature,

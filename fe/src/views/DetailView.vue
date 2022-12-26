@@ -134,13 +134,13 @@
               </div>
               <div class="flex items-center justify-between" style="flex: 3">
                 <p class="bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg" style="flex: 1">
-                  {{ round(latitude, 6) }}
+                  {{ round(latitude, 4) }}
                 </p>
 
                 <!-- Meters -->
                 <span class="text-lg font-semibold text-blue text-normal mx-4" style="flex: 1">Longtitude</span>
                 <p class="bg-white px-4 py-1 rounded-lg text-blue font-normal text-lg" style="flex: 1">
-                  {{ round(longtitude, 6) }}
+                  {{ round(longtitude, 4) }}
                 </p>
               </div>
             </label>
@@ -272,7 +272,9 @@ export default {
     }
 
     async function alert() {
-      const response = await instance.post('/sensors')
+      const response = await instance.post('/sensors', {
+        ip: ip.value
+      })
       if (!isOk(response)) { console.log('ok') }
 
     }
